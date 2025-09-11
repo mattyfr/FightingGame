@@ -38,14 +38,17 @@ Enemy e3 = new()
 List<Enemy> list = [e1, e2, e3];
 Enemy e = list[Random.Shared.Next(list.Count)];
 
-int playerHP = 50;
+int playerHP = 30;
 int statPoints = 10;
+int playerRegen = 20;
 int playerHC = a1.playerHC;
 int playerCC = a1.playerCC;
 int playerCD = a1.playerCD;
 int playerDMG = a1.playerDMG;
 
+int enemyKilled = 0;
 
+int enemyStartHP = e.enemyHP;
 int enemyDMG = e.enemyDMG;
 int enemyHC = e.enemyHC;
 int enemyHP = e.enemyHP;
@@ -146,7 +149,7 @@ static int enemyHit(int enemyDMG, int enemyHC)
 static int chooseAttack(int playerDMG, int playerHC, int playerCC, int playerCD, Attacks a1, Attacks a2)
 {
     int playerTDMG = 0;
-    Print($"Do you want to use a normal attack or heavy attak? \n 1 For normal attack \n 2 For heavy attack ",450);
+    Print($"Do you want to use a normal attack or heavy attak? \n 1 For normal attack \n 2 For heavy attack ", 450);
     string a = Console.ReadLine();
     if (a == "1")
     {
@@ -157,76 +160,92 @@ static int chooseAttack(int playerDMG, int playerHC, int playerCC, int playerCD,
     {
         playerTDMG = heavyHit(a2.playerDMG, a2.playerHC, a2.playerCC, a2.playerCD);
         return playerTDMG;
-    }    
+    }
 }
-if (statPoints > 0)
+bool gameRunning = true;
+while (gameRunning)
 {
-    Print($"Do you whant to use skill points to increase your stats \n 1 Yea \n 2 No", 400);
-    string a = Console.ReadLine();
-    if (a == ("1"))
+    if (statPoints > 0)
     {
-        while (statPoints > 0)
+        Print($"Do you whant to use skill points to increase your stats \n 1 Yea \n 2 No", 400);
+        string a = Console.ReadLine();
+        if (a == ("1"))
         {
-            Print($"you have {statPoints} avalable \n your current base stats are \n Hp:{playerHP}             press 1 to increase by 3\n Damage:{playerDMG}          press 2 to increase by 1 \n Hit chance:{playerHC}     press 3 to increase by 3\n Crit chance:{playerCC}    press 4 to increase by 3\n Crit Damage:{playerCD}     press 5 to increase by 1", 750);
-            string b = Console.ReadLine();
-            if (b == "1")
+            while (statPoints > 0)
             {
-                playerHP += 3;
-                statPoints -= 1;
-            }
-            else if (b == "2")
-            {
-                playerDMG += 1;
-                statPoints -= 1;
-            }
-            else if (b == "3")
-            {
-                playerHC += 3;
-                statPoints -= 1;
-            }
-            else if (b == "4")
-            {
-                playerCC += 3;
-                statPoints -= 1;
-            }
-            else if (b == "5")
-            {
-                playerCD += 1;
-                statPoints -= 1;
-            }
-            else
-            {
-                
+                Print($"you have {statPoints} avalable \n your current base stats are \n Hp:{playerHP}                       press 1 to increase by 3\n Damage:{playerDMG}                    press 2 to increase by 1 \n Hit chance:{playerHC}               press 3 to increase by 3\n Crit chance:{playerCC}              press 4 to increase by 3\n Crit Damage:{playerCD}               press 5 to increase by 1\n Player health regen:{playerRegen}      press 6 to increase by 1" , 750);
+                string b = Console.ReadLine();
+                if (b == "1")
+                {
+                    playerHP += 3;
+                    statPoints -= 1;
+                }
+                else if (b == "2")
+                {
+                    playerDMG += 1;
+                    statPoints -= 1;
+                }
+                else if (b == "3")
+                {
+                    playerHC += 3;
+                    statPoints -= 1;
+                }
+                else if (b == "4")
+                {
+                    playerCC += 3;
+                    statPoints -= 1;
+                }
+                else if (b == "5")
+                {
+                    playerCD += 1;
+                    statPoints -= 1;
+                }
+                else if (b == "6")
+                {
+                    playerRegen += 1;
+                    statPoints -= 1;
+                }
+                else
+                {
+
+                }
             }
         }
+        else
+        {
+
+        }
+    }
+    while (playerHP > 0 && enemyHP > 0)
+    {
+        int playerTDMG = 0;
+        int enemyTDMG = 0;
+        // playerTDMG = playerHit(playerDMG, playerHC, playerCC, playerCD);
+        playerTDMG = chooseAttack(playerDMG, playerHC, playerCC, playerCD, a1, a2);
+        enemyTDMG = enemyHit(enemyDMG, enemyHC);
+        playerHP -= enemyTDMG;
+        enemyHP -= playerTDMG;
+        Print($"player hp:{playerHP} \n{enemyName} hp:{enemyHP}", 300);
+
+        //    int playerDMG, int playerHC, int playerCC, int play
+    }
+    if (playerHP <= 0)
+    {
+        Print("You lost", 500);
+        gameRunning = false;
+        Console.ReadLine();
+    }
+    else if (enemyHP <= 0)
+    {
+        Print("You won!!", 500);
+        Print($"You regenerated {playerRegen} hp", 450);
+        playerHP += playerRegen;
+        statPoints += 3;
+        enemyKilled += 1;
+
+        enemyHP = enemyStartHP;
     }
     else
     {
-
     }
 }
-while (playerHP > 0 && enemyHP > 0)
-{
-    int playerTDMG = 0;
-    int enemyTDMG = 0;
-    // playerTDMG = playerHit(playerDMG, playerHC, playerCC, playerCD);
-    playerTDMG = chooseAttack(playerDMG, playerHC, playerCC, playerCD, a1, a2);
-    enemyTDMG = enemyHit(enemyDMG, enemyHC);
-    playerHP -= enemyTDMG;
-    enemyHP -= playerTDMG;
-    Print($"player hp:{playerHP} \n{enemyName} hp:{enemyHP}", 300);
-
-    //    int playerDMG, int playerHC, int playerCC, int play
-}
-if (playerHP <= 0)
-{
-    Print("You lost", 500);
-}
-else if (enemyHP <= 0)
-{
-    Print("You won!!", 500);
-}
-else
-{
-}
-Console.ReadLine();
