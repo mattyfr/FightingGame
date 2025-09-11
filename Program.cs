@@ -1,52 +1,55 @@
-﻿
-
-
-
-
-
-using System.Security.Cryptography;
-using FightingGame;
+﻿using FightingGame;
 
 Attacks a1 = new()
 {
     playerDMG = 5,
-    playerHC = 100,
+    playerHC = 75,
     playerCC = 15,
     playerCD = 2
 };
 Attacks a2 = new()
 {
     playerDMG = 15,
-    playerHC = 0,
+    playerHC = 40,
     playerCC = 10,
     playerCD = 3
 };
 Enemy e1 = new()
 {
+    enemyName = "enemy",
     enemyDMG = 1,
     enemyHC = 99,
     enemyHP = 100
 };
 Enemy e2 = new()
 {
+    enemyName = "normal enemy",
     enemyDMG = 5,
     enemyHC = 50,
     enemyHP = 50
 };
-List<Enemy> list = [e1, e2];
+Enemy e3 = new()
+{
+    enemyName = "strong enemy",
+    enemyDMG = 15,
+    enemyHC = 33,
+    enemyHP = 35
+};
+List<Enemy> list = [e1, e2, e3];
 Enemy e = list[Random.Shared.Next(list.Count)];
 
 int playerHP = 50;
 int statPoints = 10;
-int playerHC = 0;
-int playerCC = 0;
-int playerCD = 0;
-int playerDMG = 0;
+int playerHC = a1.playerHC;
+int playerCC = a1.playerCC;
+int playerCD = a1.playerCD;
+int playerDMG = a1.playerDMG;
 
 
 int enemyDMG = e.enemyDMG;
 int enemyHC = e.enemyHC;
 int enemyHP = e.enemyHP;
+string enemyName = e.enemyName;
 
 static void Print(string a, int time)
 {
@@ -105,17 +108,18 @@ static int heavyHit(int playerDMG, int playerHC, int playerCC, int playerCD)
     int b = 0;
     int c = 0;
     a = random();
-    if (a <= playerHC / 3)
+    if (a <= playerHC)
     {
         b = random();
-        if (b <= playerCC / 2)
+        if (b <= playerCC)
         {
-            c = playerDMG * playerCD * 2;
+            c = playerDMG * playerCD;
+            Print("CRIT!!!", 120);
             return c;
         }
         else
         {
-            c = playerDMG * 2;
+            c = playerDMG;
             return c;
         }
     }
@@ -163,9 +167,7 @@ if (statPoints > 0)
     {
         while (statPoints > 0)
         {
-
-
-            Print($"you have {statPoints} avalable \n your current stats are \n Hp:{playerHP}             press 1 to increase \n Damage:{playerDMG}          press 2 to increase \n Hit chance:{playerHC}     press 3 to increase \n Crit chance:{playerCC}    press 4 to increase\n Crit Damage:{playerCD}     press 5 to increase", 750);
+            Print($"you have {statPoints} avalable \n your current base stats are \n Hp:{playerHP}             press 1 to increase by 3\n Damage:{playerDMG}          press 2 to increase by 1 \n Hit chance:{playerHC}     press 3 to increase by 3\n Crit chance:{playerCC}    press 4 to increase by 3\n Crit Damage:{playerCD}     press 5 to increase by 1", 750);
             string b = Console.ReadLine();
             if (b == "1")
             {
@@ -212,7 +214,7 @@ while (playerHP > 0 && enemyHP > 0)
     enemyTDMG = enemyHit(enemyDMG, enemyHC);
     playerHP -= enemyTDMG;
     enemyHP -= playerTDMG;
-    Print($"player hp:{playerHP} \nenemy hp:{enemyHP}", 300);
+    Print($"player hp:{playerHP} \n{enemyName} hp:{enemyHP}", 300);
 
     //    int playerDMG, int playerHC, int playerCC, int play
 }

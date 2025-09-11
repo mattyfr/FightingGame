@@ -4,6 +4,7 @@ namespace FightingGame;
 
 public class Enemy
 {
+    public string enemyName = "";
     public int enemyDMG = 0;
     public int enemyHC = 0;
     public int enemyHP = 0;
