@@ -1,5 +1,8 @@
 ﻿using FightingGame;
-
+int enemyKilled = 0;
+int playerHP = 30;
+int statPoints = 10;
+int playerRegen = 20;
 Attacks a1 = new()
 {
     playerDMG = 5,
@@ -9,7 +12,7 @@ Attacks a1 = new()
 };
 Attacks a2 = new()
 {
-    playerDMG = 15,
+    playerDMG = 14,
     playerHC = 40,
     playerCC = 10,
     playerCD = 3
@@ -19,48 +22,42 @@ Enemy e1 = new()
     enemyName = "enemy",
     enemyDMG = 1,
     enemyHC = 99,
-    enemyHP = 100
+    enemyHP = 100 ,
 };
 Enemy e2 = new()
 {
     enemyName = "normal enemy",
-    enemyDMG = 5,
-    enemyHC = 50,
-    enemyHP = 50
+    enemyDMG = 5 ,
+    enemyHC = 50 ,
+    enemyHP = 50 ,
 };
 Enemy e3 = new()
 {
     enemyName = "strong enemy",
-    enemyDMG = 15,
-    enemyHC = 33,
-    enemyHP = 35
+    enemyDMG = 15 ,
+    enemyHC = 33 ,
+    enemyHP = 35 ,
 };
 List<Enemy> list = [e1, e2, e3];
 Enemy e = list[Random.Shared.Next(list.Count)];
 // ===============================================
-int playerHP = 30;
-int statPoints = 10;
-int playerRegen = 20;
-
 int playerHC = a1.playerHC;
 int playerCC = a1.playerCC ;
 int playerCD = a1.playerCD ;
 int playerDMG = a1.playerDMG ;
-// =========================================
-int enemyKilled = 0;
 // =========================================
 int enemyStartHP = e.enemyHP;
 int enemyDMG = e.enemyDMG;
 int enemyHC = e.enemyHC;
 int enemyHP = e.enemyHP;
 string enemyName = e.enemyName;
-
+// =========================================
 bool gameRunning = true;
 while (gameRunning)
 {
     if (statPoints > 0)
     {
-        Print($"Do you whant to use skill points to increase your stats \n 1 Yea \n 2 No", 400);
+        Print($"Do you want to use skill points to increase your stats \n 1 Yea \n 2 No", 400);
         string a = Console.ReadLine();
         bool wantToSpendSkillPoints = true;
 
@@ -148,7 +145,7 @@ while (gameRunning)
         statPoints += 3;
         enemyKilled += 1;
 
-        enemyHP = enemyStartHP;
+        enemyHP = enemyStartHP + enemyKilled;
     }
     else
     {
