@@ -34,12 +34,14 @@ Enemy e2 = new()
 Enemy e3 = new()
 {
     enemyName = "strong enemy",
-    enemyDMG = 15 ,
-    enemyHC = 33 ,
-    enemyHP = 35 ,
+    enemyDMG = 15,
+    enemyHC = 33,
+    enemyHP = 35,
 };
 List<Enemy> list = [e1, e2, e3];
 Enemy e = list[Random.Shared.Next(list.Count)];
+
+
 // ===============================================
 int playerHC = a1.playerHC;
 int playerCC = a1.playerCC ;
@@ -52,6 +54,7 @@ int enemyHC = e.enemyHC;
 int enemyHP = e.enemyHP;
 string enemyName = e.enemyName;
 // =========================================
+bool loadNewEnemy = true;
 bool gameRunning = true;
 while (gameRunning)
 {
@@ -117,17 +120,17 @@ while (gameRunning)
             wantToSpendSkillPoints = false;
         }
     }
-    while (playerHP > 0 && enemyHP > 0)
+    while (playerHP > 0 && e.enemyHP > 0)
     {
-        
+
         int playerTDMG = 0;
         int enemyTDMG = 0;
         // playerTDMG = playerHit(playerDMG, playerHC, playerCC, playerCD);
         playerTDMG = chooseAttack(playerDMG, playerHC, playerCC, playerCD, a1, a2);
         enemyTDMG = enemyHit(enemyDMG, enemyHC);
         playerHP -= enemyTDMG;
-        enemyHP -= playerTDMG;
-        Print($"player hp:{playerHP} \n{enemyName} hp:{enemyHP}", 300);
+        e.enemyHP -= playerTDMG;
+        Print($"player hp:{playerHP} \n{e.enemyName} hp:{e.enemyHP}", 300);
 
         //    int playerDMG, int playerHC, int playerCC, int play
     }
@@ -144,11 +147,17 @@ while (gameRunning)
         playerHP += playerRegen;
         statPoints += 3;
         enemyKilled += 1;
-
         enemyHP = enemyStartHP + enemyKilled;
+        loadNewEnemy = true;
     }
     else
     {
+    }
+    if (loadNewEnemy == true)
+    {
+        e = list[Random.Shared.Next(list.Count)];
+        Print($"{e.enemyName}",20);
+        loadNewEnemy = false;
     }
 }
 
