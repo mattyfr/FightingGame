@@ -33,21 +33,21 @@ Attacks a2 = new()
 };
 Enemy e1 = new()
 {
-    enemyName = "enemy",
+    enemyName = "Tank zombie",
     enemyDMG = 1,
     enemyHC = 99,
     enemyHP = 100 ,
 };
 Enemy e2 = new()
 {
-    enemyName = "normal enemy",
+    enemyName = "Zombie",
     enemyDMG = 5 ,
     enemyHC = 50 ,
     enemyHP = 50 ,
 };
 Enemy e3 = new()
 {
-    enemyName = "strong enemy",
+    enemyName = "Strong Zombie",
     enemyDMG = 15,
     enemyHC = 33,
     enemyHP = 35,
@@ -265,7 +265,7 @@ while (openMenu)
     }
     else if (a == "6")
     {
-        Save(playerHP, playerDMG, playerCD, playerCC, playerCoins, playerRegen, playerLVL, exp, enemyKilled);
+        Save(playerHP, playerDMG, playerCD, playerCC, playerCoins, playerRegen, playerLVL, exp, enemyKilled, playerHC);
     }
     else if (a == "7")
     {
@@ -274,13 +274,14 @@ while (openMenu)
 
         playerHP = (floatArray[0]);
         playerDMG = (floatArray[1]);
-        playerCD = (floatArray[2]);
-        playerCC = (floatArray[3]);
-        playerCoins = (floatArray[4]);
-        playerRegen = (floatArray[5]);
-        playerLVL = (floatArray[6]);
-        exp = (floatArray[7]);
-        enemyKilled = (floatArray[8]);
+        playerHC = (floatArray[2]);
+        playerCD = (floatArray[3]);
+        playerCC = (floatArray[4]);
+        playerCoins = (floatArray[5]);
+        playerRegen = (floatArray[6]);
+        playerLVL = (floatArray[7]);
+        exp = (floatArray[8]);
+        enemyKilled = (floatArray[9]);
 
     }
 }
@@ -399,10 +400,11 @@ static string[] load()
     string[] saveStats = File.ReadAllLines(@"save.txt");
     return saveStats;
 }
-static void Save(float playerHP, float playerDMG, float playerCD, float playerCC, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled)
+static void Save(float playerHP, float playerDMG, float playerCD, float playerCC, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float playerHC)
 {
 string splayerHP = playerHP.ToString();
 string splayerDMG = playerDMG.ToString();
+string splayerHC = playerHC.ToString();
 string splayerCD = playerCD.ToString();
 string splayerCC = playerCC.ToString();
 string splayerCoins = playerCoins.ToString();

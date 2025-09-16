@@ -5,7 +5,6 @@ coin system -- Coins are now awared when killing an enemy and when leveling up
 shop -- working 
 Add more shop upgrades
 Make it easyer to buy multiple items from shop
-boss 
 choose enemy type to kill
 slayer system
 inventory
