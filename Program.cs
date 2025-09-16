@@ -1,6 +1,6 @@
 ﻿using FightingGame;
 int enemyKilled = 0;
-int playerHP = 30;
+float playerHP = 30;
 int statPoints = 10;
 int playerRegen = 20;
 Attacks a1 = new()
@@ -38,20 +38,39 @@ Enemy e3 = new()
     enemyHC = 33,
     enemyHP = 35,
 };
+Weponds w1 = new()
+{
+    wepondName = "Atomsplit katana",
+    wepondCD = 3,
+    wepondDmg = 0,
+};
+Weponds w2 = new()
+{
+    wepondName = "Livid dagger",
+    wepondCD = 0,
+    wepondDmg = 3,
+};
+Weponds w3 = new()
+{
+    wepondName = "Hyperion",
+    wepondCD = 2,
+    wepondDmg = 2,
+};
+
 List<Enemy> list = [e1, e2, e3];
 Enemy e = list[Random.Shared.Next(list.Count)];
 
 
 // ===============================================
-int playerHC = a1.playerHC;
-int playerCC = a1.playerCC ;
-int playerCD = a1.playerCD ;
-int playerDMG = a1.playerDMG ;
+float playerHC = a1.playerHC;
+float playerCC = a1.playerCC ;
+float playerCD = a1.playerCD ;
+float playerDMG = a1.playerDMG ;
 // =========================================
-int enemyStartHP = e.enemyHP;
-int enemyDMG = e.enemyDMG;
-int enemyHC = e.enemyHC;
-int enemyHP = e.enemyHP;
+float enemyStartHP = e.enemyHP;
+float enemyDMG = e.enemyDMG;
+float enemyHC = e.enemyHC;
+float enemyHP = e.enemyHP;
 string enemyName = e.enemyName;
 // =========================================
 int askToSpendSkillPoints = 1;
@@ -122,8 +141,8 @@ while (gameRunning)
     while (playerHP > 0 && e.enemyHP > 0)
     {
 
-        int playerTDMG = 0;
-        int enemyTDMG = 0;
+        float playerTDMG = 0;
+        float enemyTDMG = 0;
         // playerTDMG = playerHit(playerDMG, playerHC, playerCC, playerCD);
         playerTDMG = chooseAttack(playerDMG, playerHC, playerCC, playerCD, a1, a2);
         enemyTDMG = enemyHit(enemyDMG, enemyHC);
@@ -181,11 +200,11 @@ static int random()
     return a;
 
 }
-static int normalHit(int playerDMG, int playerHC, int playerCC, int playerCD)
+static float normalHit(float playerDMG, float playerHC, float playerCC, float playerCD)
 {
     int a = 0;
     int b = 0;
-    int c = 0;
+    float c = 0;
     a = random();
     if (a <= playerHC)
     {
@@ -209,11 +228,11 @@ static int normalHit(int playerDMG, int playerHC, int playerCC, int playerCD)
     }
 
 }
-static int heavyHit(int playerDMG, int playerHC, int playerCC, int playerCD)
+static float heavyHit(float playerDMG, float playerHC, float playerCC, float playerCD)
 {
     int a = 0;
     int b = 0;
-    int c = 0;
+    float c = 0;
     a = random();
     if (a <= playerHC)
     {
@@ -235,10 +254,10 @@ static int heavyHit(int playerDMG, int playerHC, int playerCC, int playerCD)
         return 0;
     }
 }
-static int enemyHit(int enemyDMG, int enemyHC)
+static float enemyHit(float enemyDMG, float enemyHC)
 {
     int a = 0;
-    int b = 0;
+    float b = 0;
     a = random();
     if (a <= enemyHC)
     {
@@ -250,9 +269,9 @@ static int enemyHit(int enemyDMG, int enemyHC)
         return 0;
     }
 }
-static int chooseAttack(int playerDMG, int playerHC, int playerCC, int playerCD, Attacks a1, Attacks a2)
+static float chooseAttack(float playerDMG, float playerHC, float playerCC, float playerCD, Attacks a1, Attacks a2)
 {
-    int playerTDMG = 0;
+    float playerTDMG = 0;
     Print($"Do you want to use a normal attack or heavy attak? \n 1 For normal attack \n 2 For heavy attack ", 450);
     string a = Console.ReadLine();
     if (a == "1")

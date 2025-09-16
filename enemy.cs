@@ -5,16 +5,26 @@ namespace FightingGame;
 public class Enemy
 {
     public string enemyName = "";
-    public int enemyDMG = 0;
-    public int enemyHC = 0;
-    public int enemyHP = 0;
+    public float enemyDMG = 0;
+    public float enemyHC = 0;
+    public float enemyHP = 0;
 
 }
 
 public class Attacks
 {
-    public int playerDMG = 0;
-    public int playerHC = 0;
-    public int playerCC = 0;
-    public int playerCD = 0;
+    public float playerDMG = 0;
+    public float playerHC = 0;
+    public float playerCC = 0;
+    public float playerCD = 0;
+}
+
+public class Weponds
+{
+    public string wepondName = "";
+    public float wepondDmg = 0;
+    public float wepondCD = 0;
+
+
+
 }
