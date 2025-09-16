@@ -3,6 +3,7 @@ using System.IO;
 using FightingGame;
 using Microsoft.VisualBasic;
 using System.Globalization;
+using System.Security.AccessControl;
 
 string[] stats = {};
 float enemyKilled = 0;
@@ -24,13 +25,6 @@ Attacks a1 = new()
     playerCC = 15,
     playerCD = 2
 };
-Attacks a2 = new()
-{
-    playerDMG = 14,
-    playerHC = 40,
-    playerCC = 10,
-    playerCD = 3
-};
 Enemy e1 = new()
 {
     enemyName = "Tank zombie",
@@ -51,6 +45,13 @@ Enemy e3 = new()
     enemyDMG = 15,
     enemyHC = 33,
     enemyHP = 35,
+};
+Weponds w0 = new()
+{
+    wepondName = "",
+    wepondCD = 1f,
+    wepondDmg = 1f,
+    wepondStrength = "",
 };
 Weponds w1 = new()
 {
@@ -83,13 +84,14 @@ Weponds w4 = new()
 
 List<Enemy> list = [e1, e2, e3];
 Enemy e = list[Random.Shared.Next(list.Count)];
-
+List<Weponds> wepondsList = [w0, w1, w2, w3, w4];
+Weponds w = wepondsList[0];
 
 // ===============================================
 float playerHC = a1.playerHC;
 float playerCC = a1.playerCC ;
-float playerCD = a1.playerCD ;
-float playerDMG = a1.playerDMG ;
+float playerCD = a1.playerCD * w.wepondCD;
+float playerDMG = a1.playerDMG * w.wepondDmg;
 // =========================================
 float enemyStartHP = e.enemyHP;
 float enemyDMG = e.enemyDMG;
@@ -98,7 +100,10 @@ float enemyHP = e.enemyHP;
 string enemyName = e.enemyName;
 // =========================================
 
+
 bool openMenu = true;
+
+
 while (openMenu)
 {
     string a = "0";
@@ -107,7 +112,7 @@ while (openMenu)
     // view stats 
     if (a == "1")
     {
-        Print($"HP:{playerHP}\nDamage:{playerDMG}\nHit Chance:{playerHC}\nCrit Damage:{playerCD}\nCrit Chance{playerCC}\nCoins:{playerCoins}\nRegen:{playerRegen}", 200);
+        Print($"HP:{playerHP}\nDamage:{a1.playerDMG}\nHit Chance:{a1.playerHC}\nCrit Damage:{a1.playerCD}\nCrit Chance{a1.playerCC}\nCoins:{playerCoins}\nRegen:{playerRegen}", 200);
     }
     else if (a == "2")
     {
@@ -125,29 +130,21 @@ while (openMenu)
             else if (b == "2")
             {
                 a1.playerDMG += 1;
-                a2.playerDMG += 1;
-                playerDMG += 1;
                 statPoints -= 1;
             }
             else if (b == "3")
             {
                 a1.playerHC += 3;
-                a2.playerHC += 3;
-                playerHC += 3;
                 statPoints -= 1;
             }
             else if (b == "4")
             {
                 a1.playerCC += 3;
-                a2.playerCC += 3;
-                playerCC += 3;
                 statPoints -= 1;
             }
             else if (b == "5")
             {
                 a1.playerCD += 1;
-                a2.playerCD += 1;
-                playerCD += 1;
                 statPoints -= 1;
             }
             else if (b == "6")
@@ -160,17 +157,18 @@ while (openMenu)
     }
     else if (a == "3")
     {
+
         wantToFightEnemy = true;
         while (wantToFightEnemy)
         {
 
             while (playerHP > 0 && e.enemyHP > 0 && wantToFightEnemy)
             {
-                Console.WriteLine(wantToFightEnemy);
+                Console.WriteLine(a1.playerDMG);
                 float playerTDMG = 0;
                 float enemyTDMG = 0;
                 // playerTDMG = playerHit(playerDMG, playerHC, playerCC, playerCD);
-                playerTDMG = chooseAttack(playerDMG, playerHC, playerCC, playerCD, a1, a2);
+                playerTDMG = chooseAttack(a1.playerDMG, a1.playerHC, a1.playerCC, a1.playerCD, a1, w);
                 enemyTDMG = enemyHit(enemyHC, enemyDMG);
                 playerHP -= enemyTDMG;
                 e.enemyHP -= playerTDMG;
@@ -195,7 +193,6 @@ while (openMenu)
                 enemyKilled += 1;
                 exp += 25;
                 playerCoins += Random.Shared.Next(1, 4);
-                e.enemyHP = enemyStartHP + enemyKilled;
                 e = list[Random.Shared.Next(list.Count)];
                 enemyHC = e.enemyHC;
                 enemyDMG = e.enemyDMG;
@@ -235,7 +232,7 @@ while (openMenu)
     }
     else if (a == "5")
     {
-        Print($"Shop\n 1. +2 HP cost 10 coin\n 2. +5 DMG cost 10 coin\n 3. +5 Hit Chance cost 10 coin", 650);
+        Print($"Shop\n 1. +2 HP cost 10 coin\n 2. +5 DMG cost 10 coin\n 3. +5 Hit Chance cost 10 coin\n 4. Halberd Of The Shreadded cost 100 coin\n 5. Sting cost 100 coin \n 6. Pooch Swrod cost 100 coin \n 7. Atomsplit Kataana cost 100 coin", 650);
         string b = Console.ReadLine();
         if (b == "1")
         {
@@ -262,27 +259,56 @@ while (openMenu)
                 playerCoins -= 10;
             }
         }
+        else if (b == "3")
+        {
+            if (playerCoins > 100)
+            {
+                w = wepondsList[1];
+            }
+        }
+        else if (b == "4")
+        {
+            if (playerCoins > 100)
+            {
+                w = wepondsList[2];
+            }
+        }
+        else if (b == "4")
+        {
+            if (playerCoins > 100)
+            {
+                w = wepondsList[3];
+            }
+        }
+        else if (b == "5")
+        {
+            if (playerCoins > 100)
+            {
+                w = wepondsList[4];
+            }
+
+        }
     }
     else if (a == "6")
     {
-        Save(playerHP, playerDMG, playerCD, playerCC, playerCoins, playerRegen, playerLVL, exp, enemyKilled, playerHC);
+        Save(playerHP, playerDMG, playerCD, playerCC, playerCoins, playerRegen, playerLVL, exp, enemyKilled, playerHC, maxPlayerHP);
     }
     else if (a == "7")
     {
         string[] Stats = load();
         float[] floatArray = Array.ConvertAll(Stats, float.Parse);
-
         playerHP = (floatArray[0]);
-        playerDMG = (floatArray[1]);
-        playerHC = (floatArray[2]);
-        playerCD = (floatArray[3]);
-        playerCC = (floatArray[4]);
+        a1.playerDMG = (floatArray[1]);
+        a1.playerHC = (floatArray[2]);
+        a1.playerCD = (floatArray[3]);
+        a1.playerCC = (floatArray[4]);
         playerCoins = (floatArray[5]);
         playerRegen = (floatArray[6]);
         playerLVL = (floatArray[7]);
         exp = (floatArray[8]);
         enemyKilled = (floatArray[9]);
-
+        maxPlayerHP = (floatArray[10]);
+        UpdateStats(a1, playerHC, playerCC, playerCD, playerDMG, w, floatArray);
     }
 }
 static void Print(string a, int time)
@@ -309,7 +335,7 @@ static int random()
     return a;
 
 }
-static float normalHit(float playerDMG, float playerHC, float playerCC, float playerCD)
+static float normalHit(float playerDMG, float playerHC, float playerCC, float playerCD, float wepondDmg, float wepondCD)
 {
     int a = 0;
     int b = 0;
@@ -327,7 +353,6 @@ static float normalHit(float playerDMG, float playerHC, float playerCC, float pl
         else
         {
             c = playerDMG;
-            Print($"{playerDMG}", 100);
             return c;
         }
     }
@@ -336,32 +361,6 @@ static float normalHit(float playerDMG, float playerHC, float playerCC, float pl
         return 0;
     }
 
-}
-static float heavyHit(float playerDMG, float playerHC, float playerCC, float playerCD)
-{
-    int a = 0;
-    int b = 0;
-    float c = 0;
-    a = random();
-    if (a <= playerHC)
-    {
-        b = random();
-        if (b <= playerCC)
-        {
-            c = playerDMG * playerCD;
-            Print("CRIT!!!", 120);
-            return c;
-        }
-        else
-        {
-            c = playerDMG;
-            return c;
-        }
-    }
-    else
-    {
-        return 0;
-    }
 }
 static float enemyHit(float enemyHC,float  enemyDMG)
 {
@@ -378,42 +377,41 @@ static float enemyHit(float enemyHC,float  enemyDMG)
         return 0;
     }
 }
-static float chooseAttack(float playerDMG, float playerHC, float playerCC, float playerCD, Attacks a1, Attacks a2)
+static float chooseAttack(float playerDMG, float playerHC, float playerCC, float playerCD, Attacks a1, Weponds w)
 {
     float playerTDMG = 0;
-    Print($"Do you want to use a normal attack or heavy attak? \n 1 For normal attack \n 2 For heavy attack ", 450);
-    string a = Console.ReadLine();
-    if (a == "1")
-    {
-        
-        playerTDMG = normalHit(a1.playerDMG, a1.playerHC, a1.playerCC, a1.playerCD);
-        return playerTDMG;
-    }
-    else
-    {
-        playerTDMG = heavyHit(a2.playerDMG, a2.playerHC, a2.playerCC, a2.playerCD);
-        return playerTDMG;
-    }
+    playerTDMG = normalHit(a1.playerDMG, a1.playerHC, a1.playerCC, a1.playerCD, w.wepondDmg, w.wepondCD);
+    return playerTDMG;
+
 }
 static string[] load()
 {
     string[] saveStats = File.ReadAllLines(@"save.txt");
     return saveStats;
 }
-static void Save(float playerHP, float playerDMG, float playerCD, float playerCC, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float playerHC)
+static void Save(float playerHP, float playerDMG, float playerCD, float playerCC, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float playerHC, float maxPlayerHP)
 {
-string splayerHP = playerHP.ToString();
-string splayerDMG = playerDMG.ToString();
-string splayerHC = playerHC.ToString();
-string splayerCD = playerCD.ToString();
-string splayerCC = playerCC.ToString();
-string splayerCoins = playerCoins.ToString();
-string splayerRegen = playerRegen.ToString();
-string splayerLVL = playerLVL.ToString();
-string sexp = exp.ToString();
-string senemyKilled = enemyKilled.ToString();
-string[] saveStats = { splayerHP, splayerDMG, splayerCD, splayerCC, splayerCoins, splayerRegen, splayerLVL, sexp, senemyKilled };
+    string splayerHP = playerHP.ToString();
+    string splayerDMG = playerDMG.ToString();
+    string splayerHC = playerHC.ToString();
+    string splayerCD = playerCD.ToString();
+    string splayerCC = playerCC.ToString();
+    string splayerCoins = playerCoins.ToString();
+    string splayerRegen = playerRegen.ToString();
+    string splayerLVL = playerLVL.ToString();
+    string sexp = exp.ToString();
+    string senemyKilled = enemyKilled.ToString();
+    string smaxPlayerHP = maxPlayerHP.ToString();
+    string[] saveStats = { splayerHP, splayerDMG, splayerCD, splayerCC, splayerCoins, splayerRegen, splayerLVL, sexp, senemyKilled, splayerHC, smaxPlayerHP };
 
 
-File.WriteAllLines(@"save.txt", saveStats);
+    File.WriteAllLines(@"save.txt", saveStats);
+}
+static void UpdateStats(Attacks a1, float playerHC, float playerCC, float playerCD, float playerDMG, Weponds w, float[] floatArray)
+{
+    a1.playerHC = floatArray[2];
+    a1.playerCC = floatArray[4];
+    a1.playerCD = floatArray[3] * w.wepondCD;
+    a1.playerDMG = floatArray[1] * w.wepondDmg;
+
 }
