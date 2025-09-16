@@ -1,12 +1,18 @@
 Add
 menu -- done
+level system -- done
+coin system -- Coins are now awared when killing an enemy and when leveling up
+shop -- working 
+Add more shop upgrades
+Make it easyer to buy multiple items from shop
 boss 
-coin system
-level system
 choose enemy type to kill
 slayer system
-shop
 inventory
 
 Fix 
 player regen not capping -- done
+
+bugs 
+buying hit chance in shop dosent working -- fixed
+enemy hp dose not reset between mobs -- fixed

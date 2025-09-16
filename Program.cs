@@ -1,11 +1,15 @@
-﻿using FightingGame;
+﻿using System.Runtime.Serialization;
+using FightingGame;
 int enemyKilled = 0;
 float playerHP = 30;
 float maxPlayerHP = 30;
 int statPoints = 10;
 int playerRegen = 20;
-float playerCoins = 20;
+float playerCoins = 0;
 bool wantToFightEnemy = true;
+int playerLVL = 1;
+double exp = 0;
+double expNeedForLVL = Math.Pow(1.115f, playerLVL)*100;
 Attacks a1 = new()
 {
     playerDMG = 5,
@@ -160,7 +164,7 @@ while (openMenu)
                 float enemyTDMG = 0;
                 // playerTDMG = playerHit(playerDMG, playerHC, playerCC, playerCD);
                 playerTDMG = chooseAttack(playerDMG, playerHC, playerCC, playerCD, a1, a2);
-                enemyTDMG = enemyHit(enemyDMG, enemyHC);
+                enemyTDMG = enemyHit(enemyHC, enemyDMG);
                 playerHP -= enemyTDMG;
                 e.enemyHP -= playerTDMG;
                 Print($"player hp:{playerHP} \n{e.enemyName} hp:{e.enemyHP}", 300);
@@ -181,12 +185,24 @@ while (openMenu)
                 {
                     playerHP = maxPlayerHP;
                 }
-                statPoints += 3;
                 enemyKilled += 1;
+                exp += 25;
+                playerCoins += Random.Shared.Next(1, 4);
                 e.enemyHP = enemyStartHP + enemyKilled;
                 e = list[Random.Shared.Next(list.Count)];
-                Print("You won!!", 500);
+                enemyHC = e.enemyHC;
+                enemyDMG = e.enemyDMG;
+                enemyHP = e.enemyHP;
+                Print($"You won!!", 500);
                 Print($"You regenerated {playerRegen} hp", 450);
+                if (exp > expNeedForLVL)
+                {
+                    exp -= expNeedForLVL;
+                    playerLVL += 1;
+                    statPoints += 3;
+                    playerCoins += 100;
+                    Print($"You leveled up to level {playerLVL} and recived 100 coins and 3 skill points. \nGet {expNeedForLVL} more exp to level up again", 350);
+                }
                 Print($"Do you want to kill another", 350);
                 Print("\n 1 To kill another \n 2 To exit to menu", 450);
                 string b = "0";
@@ -205,6 +221,40 @@ while (openMenu)
 
         }
 
+    }
+    else if (a == "4")
+    {
+
+    }
+    else if (a == "5")
+    {
+        Print($"Shop\n 1. +2 HP cost 10 coin\n 2. +5 DMG cost 10 coin\n 3. +5 Hit Chance cost 10 coin", 650);
+        string b = Console.ReadLine();
+        if (b == "1")
+        {
+            if (playerCoins > 10)
+            {
+                maxPlayerHP += 2;
+                playerHP += 2;
+                playerCoins -= 10;
+            }
+        }
+        else if (b == "2")
+        {
+            if (playerCoins > 10)
+            {
+                playerDMG += 5;
+                playerCoins -= 5;
+            }
+        }
+        else if (b == "3")
+        {
+            if (playerCoins > 10)
+            {
+                playerHC += 5;
+                playerCoins -= 10;
+            }
+        }
     }
 }
 static void Print(string a, int time)
@@ -285,7 +335,7 @@ static float heavyHit(float playerDMG, float playerHC, float playerCC, float pla
         return 0;
     }
 }
-static float enemyHit(float enemyDMG, float enemyHC)
+static float enemyHit(float enemyHC,float  enemyDMG)
 {
     int a = 0;
     float b = 0;
