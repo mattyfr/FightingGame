@@ -24,7 +24,6 @@ public class Weponds
     public string wepondName = "";
     public float wepondDmg = 0;
     public float wepondCD = 0;
-
-
+    public string wepondStrength = "";
 
 }

@@ -1,0 +1,12 @@
+Add
+menu -- done
+boss 
+coin system
+level system
+choose enemy type to kill
+slayer system
+shop
+inventory
+
+Fix 
+player regen not capping -- done
