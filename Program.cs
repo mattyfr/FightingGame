@@ -54,20 +54,20 @@ int enemyHC = e.enemyHC;
 int enemyHP = e.enemyHP;
 string enemyName = e.enemyName;
 // =========================================
-bool loadNewEnemy = true;
+int askToSpendSkillPoints = 1;
 bool gameRunning = true;
 while (gameRunning)
 {
-    if (statPoints > 0)
+    bool loadNewEnemy = true;
+    while (statPoints > 0 && askToSpendSkillPoints == 1)
     {
         Print($"Do you want to use skill points to increase your stats \n 1 Yea \n 2 No", 400);
         string a = Console.ReadLine();
-        bool wantToSpendSkillPoints = true;
+        
 
         if (a == ("1"))
         {
-            wantToSpendSkillPoints = true;
-            while (wantToSpendSkillPoints && statPoints > 0)
+            while (askToSpendSkillPoints == 1 && statPoints > 0)
             {
                 Print($"you have {statPoints} avalable \n your current base stats are \n Hp:{playerHP}                       press 1 to increase by 3\n Damage:{playerDMG}                    press 2 to increase by 1 \n Hit chance:{playerHC}               press 3 to increase by 3\n Crit chance:{playerCC}              press 4 to increase by 3\n Crit Damage:{playerCD}               press 5 to increase by 1\n Player health regen:{playerRegen}      press 6 to increase by 1", 750);
                 string b = Console.ReadLine();
@@ -117,7 +117,6 @@ while (gameRunning)
         }
         else
         {
-            wantToSpendSkillPoints = false;
         }
     }
     while (playerHP > 0 && e.enemyHP > 0)
@@ -140,25 +139,22 @@ while (gameRunning)
         gameRunning = false;
         Console.ReadLine();
     }
-    else if (enemyHP <= 0)
+    else if (e.enemyHP <= 0)
     {
         Print("You won!!", 500);
         Print($"You regenerated {playerRegen} hp", 450);
         playerHP += playerRegen;
         statPoints += 3;
+        // Print($"{statPoints}",1000); #test
         enemyKilled += 1;
-        enemyHP = enemyStartHP + enemyKilled;
-        loadNewEnemy = true;
+        e.enemyHP = enemyStartHP + enemyKilled;
+        e = list[Random.Shared.Next(list.Count)];
+        // Print($"{e.enemyName}",20); #test making sure it changed enemy
     }
     else
     {
     }
-    if (loadNewEnemy == true)
-    {
-        e = list[Random.Shared.Next(list.Count)];
-        Print($"{e.enemyName}",20);
-        loadNewEnemy = false;
-    }
+
 }
 
 static void Print(string a, int time)
