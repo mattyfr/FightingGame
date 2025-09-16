@@ -9,6 +9,8 @@ boss
 choose enemy type to kill
 slayer system
 inventory
+save stats to a .txt -- done
+
 
 Fix 
 player regen not capping -- done

@@ -1,15 +1,22 @@
 ﻿using System.Runtime.Serialization;
+using System.IO;
 using FightingGame;
-int enemyKilled = 0;
+using Microsoft.VisualBasic;
+using System.Globalization;
+
+string[] stats = {};
+float enemyKilled = 0;
 float playerHP = 30;
 float maxPlayerHP = 30;
-int statPoints = 10;
-int playerRegen = 20;
+float statPoints = 10;
+float playerRegen = 20;
 float playerCoins = 0;
 bool wantToFightEnemy = true;
-int playerLVL = 1;
-double exp = 0;
-double expNeedForLVL = Math.Pow(1.115f, playerLVL)*100;
+float playerLVL = 1;
+double dexp = 0;
+float exp = (float) dexp;
+double dexpNeedForLVL = Math.Pow(1.115f, playerLVL) * 100;
+float expNeedForLVL = (float) dexpNeedForLVL;
 Attacks a1 = new()
 {
     playerDMG = 5,
@@ -95,7 +102,7 @@ bool openMenu = true;
 while (openMenu)
 {
     string a = "0";
-    Print($"Menu \n Type the number based on the action you want to do. \n 1. View stats \n 2. Spend skill points \n 3. Fight an enemy \n 4. Start a boss quest \n 5. Open shop ", 100);
+    Print($"Menu \n Type the number based on the action you want to do. \n 1. View stats \n 2. Spend skill points \n 3. Fight an enemy \n 4. Start a boss quest \n 5. Open shop \n 6. Save \n 7. Load a save", 100);
     a = Console.ReadLine();
     // view stats 
     if (a == "1")
@@ -256,6 +263,26 @@ while (openMenu)
             }
         }
     }
+    else if (a == "6")
+    {
+        Save(playerHP, playerDMG, playerCD, playerCC, playerCoins, playerRegen, playerLVL, exp, enemyKilled);
+    }
+    else if (a == "7")
+    {
+        string[] Stats = load();
+        float[] floatArray = Array.ConvertAll(Stats, float.Parse);
+
+        playerHP = (floatArray[0]);
+        playerDMG = (floatArray[1]);
+        playerCD = (floatArray[2]);
+        playerCC = (floatArray[3]);
+        playerCoins = (floatArray[4]);
+        playerRegen = (floatArray[5]);
+        playerLVL = (floatArray[6]);
+        exp = (floatArray[7]);
+        enemyKilled = (floatArray[8]);
+
+    }
 }
 static void Print(string a, int time)
 {
@@ -366,4 +393,25 @@ static float chooseAttack(float playerDMG, float playerHC, float playerCC, float
         playerTDMG = heavyHit(a2.playerDMG, a2.playerHC, a2.playerCC, a2.playerCD);
         return playerTDMG;
     }
+}
+static string[] load()
+{
+    string[] saveStats = File.ReadAllLines(@"save.txt");
+    return saveStats;
+}
+static void Save(float playerHP, float playerDMG, float playerCD, float playerCC, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled)
+{
+string splayerHP = playerHP.ToString();
+string splayerDMG = playerDMG.ToString();
+string splayerCD = playerCD.ToString();
+string splayerCC = playerCC.ToString();
+string splayerCoins = playerCoins.ToString();
+string splayerRegen = playerRegen.ToString();
+string splayerLVL = playerLVL.ToString();
+string sexp = exp.ToString();
+string senemyKilled = enemyKilled.ToString();
+string[] saveStats = { splayerHP, splayerDMG, splayerCD, splayerCC, splayerCoins, splayerRegen, splayerLVL, sexp, senemyKilled };
+
+
+File.WriteAllLines(@"save.txt", saveStats);
 }
