@@ -16,6 +16,11 @@ float playerCoins = 0;
 bool wantToFightEnemy = true;
 float playerLVL = 1;
 double dexp = 0;
+bool zslayerQuestStarted = false;
+bool sslayerQuestStarted = false;
+bool wslayerQuestStarted = false;
+bool vslayerQuestStarted = false;
+bool canFightSlayer = false;
 float zexp = 0;
 float sexp = 0;
 float wexp = 0;
@@ -32,7 +37,11 @@ Attacks a1 = new()
 };
 Enemy e0 = new()
 {
-
+    enemyName = "",
+    enemyDMG = 0,
+    enemyHP = 0,
+    enenmyType = "",
+    enemyHC = 0
 };
 Enemy e1 = new()
 {
@@ -97,6 +106,35 @@ Enemy e8 = new()
     enemyHP = 120,
     enenmyType = "vamp"
 };
+Enemy e9 = new()
+{
+    enemyName = "Revenat Horror",
+    enemyDMG = 15,
+    enemyHP = 125,
+    enemyHC = 99,
+    enenmyType = "zombie"
+};
+Enemy e10 = new() {
+    enemyName = "Tarantula Broodfather",
+    enemyDMG = 17,
+    enemyHP = 175,
+    enemyHC = 99,
+    enenmyType = "spider"
+};
+Enemy e11 = new() {
+    enemyName = "Sven Packmaster",
+    enemyDMG = 31,
+    enemyHC = 85,
+    enemyHP = 200,
+    enenmyType = "wolf"
+};
+Enemy e12 = new() {
+    enemyName = "Voidgloom Seraph",
+    enemyDMG = 100,
+    enemyHC = 99,
+    enemyHP = 325,
+    enenmyType = "vamp"
+};
 
 Weponds w0 = new()
 {
@@ -134,7 +172,7 @@ Weponds w4 = new()
     wepondStrength = "vamp"
 };
 
-List<Enemy> list = [e1, e2, e3, e5, e6, e7, e8];
+List<Enemy> list = [e0, e1, e2, e3, e5, e6, e7, e8];
 List<Enemy> zlist = [e1, e2, e3];
 List<Enemy> slist = [e4, e5];
 List<Enemy> wlist = [e6, e7];
@@ -160,12 +198,21 @@ while (openMenu)
 {
     Console.Clear();
     string a = "0";
-    Print($"Menu \n Type the number based on the action you want to do. \n 1. View stats \n 2. Spend skill points \n 3. Fight an enemy \n 4. Start a boss quest \n 5. Open shop \n 6. Save \n 7. Load a save", 100);
+    Console.WriteLine(@" _   .-')       ('-.        .-') _               
+( '.( OO )_   _(  OO)      ( OO ) )              
+ ,--.   ,--.)(,------. ,--./ ,--,'   ,--. ,--.   
+ |   `.'   |  |  .---' |   \ |  |\   |  | |  |   
+ |         |  |  |     |    \|  | )  |  | | .-') 
+ |  |'.'|  | (|  '--.  |  .     |/   |  |_|( OO )
+ |  |   |  |  |  .--'  |  |\    |    |  | | `-' /
+ |  |   |  |  |  `---. |  | \   |   ('  '-'(_.-' 
+ `--'   `--'  `------' `--'  `--'     `-----'    ");
+    Print($"\n Type the number based on the action you want to do. \n 1. View stats \n 2. Spend skill points \n 3. Fight an enemy \n 4. Start a boss quest \n 5. Open shop \n 6. Save \n 7. Load a save", 100);
     a = Console.ReadLine();
     // view stats 
     if (a == "1")
     {
-        Print($"HP:{playerHP}\nDamage:{a1.playerDMG}\nHit Chance:{a1.playerHC}\nCrit Damage:{a1.playerCD}\nCrit Chance{a1.playerCC}\nCoins:{playerCoins}\nRegen:{playerRegen}", 200);
+        Print($"HP:{playerHP}\nDamage:{a1.playerDMG}\nHit Chance:{a1.playerHC}\nCrit Damage:{a1.playerCD}\nCrit Chance{a1.playerCC}\nCoins:{playerCoins}\nRegen:{playerRegen}\n Your current sword is {w.wepondName}", 200);
         Console.ReadLine();
     }
     // Opens the spend skill points menu
@@ -217,7 +264,39 @@ while (openMenu)
         wantToFightEnemy = true;
         while (wantToFightEnemy)
         {
-            Print($"What typer of enemy do you want to fight \n 1. Zombie \n 2. Sprider \n 3. Wolf \n 4. Vampire", 350);
+            Print($"What typer of enemy do you want to fight \n 1. Zombie \n 2. Sprider \n 3. Wolf \n 4. Vampire\n", 350);
+            if (zslayerQuestStarted)
+            {
+                if (zexp > 250)
+                {
+                    Print($"5. Fight boss", 100);
+                    canFightSlayer = true;
+                }
+            }
+            else if (sslayerQuestStarted)
+            {
+                if (sexp > 250)
+                {
+                    Print($"5. Fight boss", 100);
+                    canFightSlayer = true;
+                }
+            }
+            else if (wslayerQuestStarted)
+            {
+                if (wexp > 250)
+                {
+                    Print($"5. Fight boss", 100);
+                    canFightSlayer = true;
+                }
+            }
+            else if (vslayerQuestStarted)
+            {
+                if (vexp > 250)
+                {
+                    Print($"5. Fight boss", 100);
+                    canFightSlayer = true;
+                }
+            }
             string c = Console.ReadLine();
             if (c == "1")
             {
@@ -235,7 +314,39 @@ while (openMenu)
             {
                 e = vlist[Random.Shared.Next(vlist.Count)];
             }
-            while (playerHP > 0 && e.enemyHP > 0 && wantToFightEnemy)
+            else if (c == "5")
+            {
+                if (canFightSlayer)
+                {
+                    if (zslayerQuestStarted)
+                    {
+                        e = e9;
+                        zslayerQuestStarted = false;
+
+                    }
+                    else if (sslayerQuestStarted)
+                    {
+                        e = e10;
+                        sslayerQuestStarted = false;
+                    }
+                    else if (wslayerQuestStarted)
+                    {
+                        e = e11;
+                        wslayerQuestStarted = false;
+
+                    }
+                    else if (vslayerQuestStarted)
+                    {
+                        e = e12;
+                        vslayerQuestStarted = false;
+                    }
+                    
+                }
+            }
+            enemyHC = e.enemyHC;
+            enemyDMG = e.enemyDMG;
+            enemyHP = e.enemyHP;
+            while (playerHP > 0 && enemyHP > 0 && wantToFightEnemy)
             {
                 Console.WriteLine(a1.playerDMG);
                 float playerTDMG = 0;
@@ -244,8 +355,8 @@ while (openMenu)
                 playerTDMG = chooseAttack(a1.playerDMG, a1.playerHC, a1.playerCC, a1.playerCD, a1, w);
                 enemyTDMG = enemyHit(enemyHC, enemyDMG, e);
                 playerHP -= enemyTDMG;
-                e.enemyHP -= playerTDMG;
-                Print($"player hp:{playerHP} \n{e.enemyName} hp:{e.enemyHP}", 300);
+                enemyHP -= playerTDMG;
+                Print($"player hp:{playerHP} \n{e.enemyName} hp:{enemyHP}", 300);
 
                 //    int playerDMG, int playerHC, int playerCC, int play
 
@@ -255,7 +366,7 @@ while (openMenu)
                 Print("You Died", 500);
                 Console.ReadLine();
             }
-            else if (e.enemyHP <= 0)
+            else if (enemyHP <= 0)
             {
                 // Print($"{statPoints}",1000); #test
                 playerHP += playerRegen;
@@ -283,9 +394,7 @@ while (openMenu)
                 }
                 playerCoins += Random.Shared.Next(1, 4);
 
-                enemyHC = e.enemyHC;
-                enemyDMG = e.enemyDMG;
-                enemyHP = e.enemyHP;
+
                 Print($"You won!!", 500);
                 Print($"You regenerated {playerRegen} hp", 450);
                 if (exp > expNeedForLVL)
@@ -318,7 +427,28 @@ while (openMenu)
     // Starts a boss quest  dosent work yet
     else if (a == "4")
     {
-
+        Print($"What slayer quest do you want to start\n1. Zombie \n2. Spider\n3. Wolf\n4. Vampire", 200);
+        string b = Console.ReadLine();
+        if (b == "1")
+        {
+            zslayerQuestStarted = true;
+            zexp = 0;
+        }
+        else if (b == "2")
+        {
+            sslayerQuestStarted = true;
+            sexp = 0;
+        }
+        else if (b == "3")
+        {
+            wslayerQuestStarted = true;
+            wexp = 0;
+        }
+        else if (b == "4")
+        {
+            vslayerQuestStarted = true;
+            vexp =0;
+        }
     }
     // Opens the shop menu
     else if (a == "5")
@@ -338,15 +468,15 @@ while (openMenu)
         {
             if (playerCoins > 10)
             {
-                playerDMG += 5;
-                playerCoins -= 5;
+                a1.playerDMG += 5;
+                playerCoins -= 10;
             }
         }
         else if (b == "3")
         {
             if (playerCoins > 10)
             {
-                playerHC += 5;
+                a1.playerHC += 5;
                 playerCoins -= 10;
             }
         }
@@ -355,6 +485,7 @@ while (openMenu)
             if (playerCoins > 100)
             {
                 w = wepondsList[1];
+                playerCoins -= 100;
             }
         }
         else if (b == "5")
@@ -362,6 +493,7 @@ while (openMenu)
             if (playerCoins > 100)
             {
                 w = wepondsList[2];
+                playerCoins -= 100;
             }
         }
         else if (b == "6")
@@ -369,6 +501,7 @@ while (openMenu)
             if (playerCoins > 100)
             {
                 w = wepondsList[3];
+                playerCoins -= 100;
             }
         }
         else if (b == "7")
@@ -376,6 +509,7 @@ while (openMenu)
             if (playerCoins > 100)
             {
                 w = wepondsList[4];
+                playerCoins -= 100;
             }
 
         }
@@ -397,15 +531,16 @@ while (openMenu)
         // takes the value of floatArray and puts it back into the players stats.
         playerHP = (floatArray[0]);
         a1.playerDMG = (floatArray[1]);
-        a1.playerHC = (floatArray[2]);
-        a1.playerCD = (floatArray[3]);
-        a1.playerCC = (floatArray[4]);
-        playerCoins = (floatArray[5]);
-        playerRegen = (floatArray[6]);
-        playerLVL = (floatArray[7]);
-        exp = (floatArray[8]);
-        enemyKilled = (floatArray[9]);
+        a1.playerCD = (floatArray[2]);
+        a1.playerCC = (floatArray[3]);
+        playerCoins = (floatArray[4]);
+        playerRegen = (floatArray[5]);
+        playerLVL = (floatArray[6]);
+        exp = (floatArray[7]);
+        enemyKilled = (floatArray[8]);
+        a1.playerHC = (floatArray[9]);
         maxPlayerHP = (floatArray[10]);
+
         // Updates all the player stats. dont know if still needed as i changed how the stats where saved.
         UpdateStats(a1, playerHC, playerCC, playerCD, playerDMG, w, floatArray);
     }
@@ -508,3 +643,4 @@ static void UpdateStats(Attacks a1, float playerHC, float playerCC, float player
     a1.playerDMG = floatArray[1] * w.wepondDmg;
 
 }
+
