@@ -8,6 +8,7 @@ public class Enemy
     public float enemyDMG = 0;
     public float enemyHC = 0;
     public float enemyHP = 0;
+    public string enenmyType = "";
 
 }
 

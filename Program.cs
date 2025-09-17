@@ -4,6 +4,7 @@ using FightingGame;
 using Microsoft.VisualBasic;
 using System.Globalization;
 using System.Security.AccessControl;
+using System.Linq.Expressions;
 
 string[] stats = {};
 float enemyKilled = 0;
@@ -15,6 +16,10 @@ float playerCoins = 0;
 bool wantToFightEnemy = true;
 float playerLVL = 1;
 double dexp = 0;
+float zexp = 0;
+float sexp = 0;
+float wexp = 0;
+float vexp = 0;
 float exp = (float) dexp;
 double dexpNeedForLVL = Math.Pow(1.115f, playerLVL) * 100;
 float expNeedForLVL = (float) dexpNeedForLVL;
@@ -25,19 +30,25 @@ Attacks a1 = new()
     playerCC = 15,
     playerCD = 2
 };
+Enemy e0 = new()
+{
+
+};
 Enemy e1 = new()
 {
     enemyName = "Tank zombie",
     enemyDMG = 1,
     enemyHC = 99,
-    enemyHP = 100 ,
+    enemyHP = 100,
+    enenmyType = "zombie"
 };
 Enemy e2 = new()
 {
     enemyName = "Zombie",
-    enemyDMG = 5 ,
-    enemyHC = 50 ,
-    enemyHP = 50 ,
+    enemyDMG = 5,
+    enemyHC = 50,
+    enemyHP = 50,
+    enenmyType = "zombie"
 };
 Enemy e3 = new()
 {
@@ -45,7 +56,48 @@ Enemy e3 = new()
     enemyDMG = 15,
     enemyHC = 33,
     enemyHP = 35,
+    enenmyType = "zombie"
 };
+Enemy e4 = new()
+{
+    enemyName = "Spider",
+    enemyDMG = 10,
+    enemyHC = 50,
+    enemyHP = 50,
+    enenmyType = "spider"
+};
+Enemy e5 = new()
+{
+    enemyName = "Tank Spider",
+    enemyDMG = 4,
+    enemyHC = 99,
+    enemyHP = 100,
+    enenmyType = "spider"
+};
+Enemy e6 = new() {
+    enemyName = "wolf",
+    enemyDMG = 15,
+    enemyHC = 45,
+    enemyHP = 75,
+    enenmyType = "wolf"
+};
+Enemy e7 = new()
+{
+    enemyName = "strong wolf",
+    enemyDMG = 30,
+    enemyHC = 33,
+    enemyHP = 45,
+    enenmyType = "wolf"
+};
+Enemy e8 = new()
+{
+    enemyName = "Vampire",
+    enemyDMG = 50,
+    enemyHC = 75,
+    enemyHP = 120,
+    enenmyType = "vamp"
+};
+
 Weponds w0 = new()
 {
     wepondName = "",
@@ -82,8 +134,12 @@ Weponds w4 = new()
     wepondStrength = "vamp"
 };
 
-List<Enemy> list = [e1, e2, e3];
-Enemy e = list[Random.Shared.Next(list.Count)];
+List<Enemy> list = [e1, e2, e3, e5, e6, e7, e8];
+List<Enemy> zlist = [e1, e2, e3];
+List<Enemy> slist = [e4, e5];
+List<Enemy> wlist = [e6, e7];
+List<Enemy> vlist = [e8];
+Enemy e = list[0];
 List<Weponds> wepondsList = [w0, w1, w2, w3, w4];
 Weponds w = wepondsList[0];
 
@@ -99,13 +155,10 @@ float enemyHC = e.enemyHC;
 float enemyHP = e.enemyHP;
 string enemyName = e.enemyName;
 // =========================================
-
-
 bool openMenu = true;
-
-
 while (openMenu)
 {
+    Console.Clear();
     string a = "0";
     Print($"Menu \n Type the number based on the action you want to do. \n 1. View stats \n 2. Spend skill points \n 3. Fight an enemy \n 4. Start a boss quest \n 5. Open shop \n 6. Save \n 7. Load a save", 100);
     a = Console.ReadLine();
@@ -113,7 +166,9 @@ while (openMenu)
     if (a == "1")
     {
         Print($"HP:{playerHP}\nDamage:{a1.playerDMG}\nHit Chance:{a1.playerHC}\nCrit Damage:{a1.playerCD}\nCrit Chance{a1.playerCC}\nCoins:{playerCoins}\nRegen:{playerRegen}", 200);
+        Console.ReadLine();
     }
+    // Opens the spend skill points menu
     else if (a == "2")
     {
         while (statPoints > 0)
@@ -155,13 +210,31 @@ while (openMenu)
 
         }
     }
+    // Fights a random enenmy
     else if (a == "3")
     {
 
         wantToFightEnemy = true;
         while (wantToFightEnemy)
         {
-
+            Print($"What typer of enemy do you want to fight \n 1. Zombie \n 2. Sprider \n 3. Wolf \n 4. Vampire", 350);
+            string c = Console.ReadLine();
+            if (c == "1")
+            {
+                e = zlist[Random.Shared.Next(zlist.Count)];
+            }
+            else if (c == "2")
+            {
+                e = slist[Random.Shared.Next(slist.Count)];
+            }
+            else if (c == "3")
+            {
+                e = wlist[Random.Shared.Next(wlist.Count)];
+            }
+            else if (c == "4")
+            {
+                e = vlist[Random.Shared.Next(vlist.Count)];
+            }
             while (playerHP > 0 && e.enemyHP > 0 && wantToFightEnemy)
             {
                 Console.WriteLine(a1.playerDMG);
@@ -169,7 +242,7 @@ while (openMenu)
                 float enemyTDMG = 0;
                 // playerTDMG = playerHit(playerDMG, playerHC, playerCC, playerCD);
                 playerTDMG = chooseAttack(a1.playerDMG, a1.playerHC, a1.playerCC, a1.playerCD, a1, w);
-                enemyTDMG = enemyHit(enemyHC, enemyDMG);
+                enemyTDMG = enemyHit(enemyHC, enemyDMG, e);
                 playerHP -= enemyTDMG;
                 e.enemyHP -= playerTDMG;
                 Print($"player hp:{playerHP} \n{e.enemyName} hp:{e.enemyHP}", 300);
@@ -192,8 +265,24 @@ while (openMenu)
                 }
                 enemyKilled += 1;
                 exp += 25;
+                if (e.enenmyType == "zombie")
+                {
+                    zexp += 25;
+                }
+                else if (e.enenmyType == "spider")
+                {
+                    sexp += 25;
+                }
+                else if (e.enenmyType == "wolf")
+                {
+                    wexp += 25;
+                }
+                else if (e.enenmyType == "vamp")
+                {
+                    vexp += 25;
+                }
                 playerCoins += Random.Shared.Next(1, 4);
-                e = list[Random.Shared.Next(list.Count)];
+
                 enemyHC = e.enemyHC;
                 enemyDMG = e.enemyDMG;
                 enemyHP = e.enemyHP;
@@ -226,10 +315,12 @@ while (openMenu)
         }
 
     }
+    // Starts a boss quest  dosent work yet
     else if (a == "4")
     {
 
     }
+    // Opens the shop menu
     else if (a == "5")
     {
         Print($"Shop\n You have {playerCoins} \n1. +2 HP cost 10 coin\n 2. +5 DMG cost 10 coin\n 3. +5 Hit Chance cost 10 coin\n 4. Halberd Of The Shreadded cost 100 coin\n 5. Sting cost 100 coin \n 6. Pooch Swrod cost 100 coin \n 7. Atomsplit Kataana cost 100 coin", 650);
@@ -259,28 +350,28 @@ while (openMenu)
                 playerCoins -= 10;
             }
         }
-        else if (b == "3")
+        else if (b == "4")
         {
             if (playerCoins > 100)
             {
                 w = wepondsList[1];
             }
         }
-        else if (b == "4")
+        else if (b == "5")
         {
             if (playerCoins > 100)
             {
                 w = wepondsList[2];
             }
         }
-        else if (b == "4")
+        else if (b == "6")
         {
             if (playerCoins > 100)
             {
                 w = wepondsList[3];
             }
         }
-        else if (b == "5")
+        else if (b == "7")
         {
             if (playerCoins > 100)
             {
@@ -288,15 +379,22 @@ while (openMenu)
             }
 
         }
+
     }
+    // Saves most stats 
     else if (a == "6")
     {
+        // Calls Save
         Save(playerHP, playerDMG, playerCD, playerCC, playerCoins, playerRegen, playerLVL, exp, enemyKilled, playerHC, maxPlayerHP);
     }
+    // Loads stats from the save.txt
     else if (a == "7")
     {
+        // Calls load and saves the returning string array into the string array Stats
         string[] Stats = load();
+        // Takes the string array Stats and coverts it into floats using float.parse and saves it into float array floatArray
         float[] floatArray = Array.ConvertAll(Stats, float.Parse);
+        // takes the value of floatArray and puts it back into the players stats.
         playerHP = (floatArray[0]);
         a1.playerDMG = (floatArray[1]);
         a1.playerHC = (floatArray[2]);
@@ -308,6 +406,7 @@ while (openMenu)
         exp = (floatArray[8]);
         enemyKilled = (floatArray[9]);
         maxPlayerHP = (floatArray[10]);
+        // Updates all the player stats. dont know if still needed as i changed how the stats where saved.
         UpdateStats(a1, playerHC, playerCC, playerCD, playerDMG, w, floatArray);
     }
 }
@@ -330,6 +429,7 @@ static void Print(string a, int time)
 }
 static int random()
 {
+    // gives random value from 1 - 100 
     int a = 0;
     a = Random.Shared.Next(1, 101);
     return a;
@@ -337,6 +437,7 @@ static int random()
 }
 static float normalHit(float playerDMG, float playerHC, float playerCC, float playerCD, float wepondDmg, float wepondCD)
 {
+    // runns the normal Hit to calc the players damage.
     int a = 0;
     int b = 0;
     float c = 0;
@@ -362,14 +463,15 @@ static float normalHit(float playerDMG, float playerHC, float playerCC, float pl
     }
 
 }
-static float enemyHit(float enemyHC,float  enemyDMG)
+static float enemyHit(float enemyHC,float  enemyDMG, Enemy e)
 {
+    // calculates the damage of the enemy
     int a = 0;
     float b = 0;
     a = random();
-    if (a <= enemyHC)
+    if (a <= e.enemyHC)
     {
-        b = enemyDMG;
+        b = e.enemyDMG;
         return b;
     }
     else
@@ -379,6 +481,7 @@ static float enemyHit(float enemyHC,float  enemyDMG)
 }
 static float chooseAttack(float playerDMG, float playerHC, float playerCC, float playerCD, Attacks a1, Weponds w)
 {
+    // chooses an attack currently there is only one.
     float playerTDMG = 0;
     playerTDMG = normalHit(a1.playerDMG, a1.playerHC, a1.playerCC, a1.playerCD, w.wepondDmg, w.wepondCD);
     return playerTDMG;
@@ -386,25 +489,15 @@ static float chooseAttack(float playerDMG, float playerHC, float playerCC, float
 }
 static string[] load()
 {
+    // Reads all the text in save file located in bin. It saves it into the string array saveStats that is later returned.
     string[] saveStats = File.ReadAllLines(@"save.txt");
     return saveStats;
 }
 static void Save(float playerHP, float playerDMG, float playerCD, float playerCC, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float playerHC, float maxPlayerHP)
 {
-    string splayerHP = playerHP.ToString();
-    string splayerDMG = playerDMG.ToString();
-    string splayerHC = playerHC.ToString();
-    string splayerCD = playerCD.ToString();
-    string splayerCC = playerCC.ToString();
-    string splayerCoins = playerCoins.ToString();
-    string splayerRegen = playerRegen.ToString();
-    string splayerLVL = playerLVL.ToString();
-    string sexp = exp.ToString();
-    string senemyKilled = enemyKilled.ToString();
-    string smaxPlayerHP = maxPlayerHP.ToString();
-    string[] saveStats = { splayerHP, splayerDMG, splayerCD, splayerCC, splayerCoins, splayerRegen, splayerLVL, sexp, senemyKilled, splayerHC, smaxPlayerHP };
-
-
+    // Converts all stats i want to save to strings and puts them in a string array
+    string[] saveStats = { playerHP.ToString(), playerDMG.ToString(), playerCD.ToString(), playerCC.ToString(), playerCoins.ToString(), playerRegen.ToString(), playerLVL.ToString(), exp.ToString(), enemyKilled.ToString(), playerHC.ToString(), maxPlayerHP.ToString() };
+    // Writes the string array into the text file called save. located somewhere in bin i think.
     File.WriteAllLines(@"save.txt", saveStats);
 }
 static void UpdateStats(Attacks a1, float playerHC, float playerCC, float playerCD, float playerDMG, Weponds w, float[] floatArray)
