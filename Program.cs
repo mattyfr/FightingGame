@@ -118,7 +118,7 @@ while (openMenu)
     {
         while (statPoints > 0)
         {
-            Print($"you have {statPoints} avalable \n your current base stats are \n Hp:{playerHP}                       press 1 to increase by 3\n Damage:{playerDMG}                    press 2 to increase by 1 \n Hit chance:{playerHC}               press 3 to increase by 3\n Crit chance:{playerCC}              press 4 to increase by 3\n Crit Damage:{playerCD}               press 5 to increase by 1\n Player health regen:{playerRegen}      press 6 to increase by 1", 750);
+            Print($"you have {statPoints} avalable \n your current base stats are \n Hp:{playerHP}                       press 1 to increase by 3\n Damage:{a1.playerDMG}                    press 2 to increase by 1 \n Hit chance:{a1.playerHC}               press 3 to increase by 3\n Crit chance:{a1.playerCC}              press 4 to increase by 3\n Crit Damage:{a1.playerCD}               press 5 to increase by 1\n Player health regen:{playerRegen}      press 6 to increase by 1", 750);
             string b = Console.ReadLine();
             if (b == "1")
             {
@@ -232,7 +232,7 @@ while (openMenu)
     }
     else if (a == "5")
     {
-        Print($"Shop\n 1. +2 HP cost 10 coin\n 2. +5 DMG cost 10 coin\n 3. +5 Hit Chance cost 10 coin\n 4. Halberd Of The Shreadded cost 100 coin\n 5. Sting cost 100 coin \n 6. Pooch Swrod cost 100 coin \n 7. Atomsplit Kataana cost 100 coin", 650);
+        Print($"Shop\n You have {playerCoins} \n1. +2 HP cost 10 coin\n 2. +5 DMG cost 10 coin\n 3. +5 Hit Chance cost 10 coin\n 4. Halberd Of The Shreadded cost 100 coin\n 5. Sting cost 100 coin \n 6. Pooch Swrod cost 100 coin \n 7. Atomsplit Kataana cost 100 coin", 650);
         string b = Console.ReadLine();
         if (b == "1")
         {
