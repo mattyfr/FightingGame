@@ -6,28 +6,33 @@ using System.Globalization;
 using System.Security.AccessControl;
 using System.Linq.Expressions;
 
-string[] stats = {};
+// string[] stats = {};
+// start stats
 float enemyKilled = 0;
 float playerHP = 30;
 float maxPlayerHP = 30;
 float statPoints = 10;
 float playerRegen = 20;
 float playerCoins = 0;
-bool wantToFightEnemy = true;
 float playerLVL = 1;
-double dexp = 0;
+// booleans needed to be set to a sertain value on start
+bool wantToFightEnemy = true;
 bool zslayerQuestStarted = false;
 bool sslayerQuestStarted = false;
 bool wslayerQuestStarted = false;
 bool vslayerQuestStarted = false;
 bool canFightSlayer = false;
+// base value for the exp of eatch type
 float zexp = 0;
 float sexp = 0;
 float wexp = 0;
 float vexp = 0;
+// leveling things 
+double dexp = 0;
 float exp = (float) dexp;
 double dexpNeedForLVL = Math.Pow(1.115f, playerLVL) * 100;
-float expNeedForLVL = (float) dexpNeedForLVL;
+float expNeedForLVL = (float)dexpNeedForLVL;
+// all classes needed
 Attacks a1 = new()
 {
     playerDMG = 5,
@@ -171,33 +176,41 @@ Weponds w4 = new()
     wepondDmg = 1.5f,
     wepondStrength = "vamp"
 };
-
+// some lists one for eatch mob type
 List<Enemy> list = [e0, e1, e2, e3, e5, e6, e7, e8];
 List<Enemy> zlist = [e1, e2, e3];
 List<Enemy> slist = [e4, e5];
 List<Enemy> wlist = [e6, e7];
 List<Enemy> vlist = [e8];
+// selects an empty enemy in the start (gets changed before first fight)
 Enemy e = list[0];
+// list with all weponds
 List<Weponds> wepondsList = [w0, w1, w2, w3, w4];
+// selects empty wepond in the start
 Weponds w = wepondsList[0];
 
 // ===============================================
+// defines some variables later used to for combat
 float playerHC = a1.playerHC;
 float playerCC = a1.playerCC ;
 float playerCD = a1.playerCD * w.wepondCD;
 float playerDMG = a1.playerDMG * w.wepondDmg;
 // =========================================
+// same as for player
 float enemyStartHP = e.enemyHP;
 float enemyDMG = e.enemyDMG;
 float enemyHC = e.enemyHC;
 float enemyHP = e.enemyHP;
 string enemyName = e.enemyName;
 // =========================================
+// defines the boolean value that starts the game
 bool openMenu = true;
+// The game
 while (openMenu)
 {
+    // clears console to remove pervius messeges
     Console.Clear();
-    string a = "0";
+    // ascii art + the menu showing the plater what they can do 
     Console.WriteLine(@" _   .-')       ('-.        .-') _               
 ( '.( OO )_   _(  OO)      ( OO ) )              
  ,--.   ,--.)(,------. ,--./ ,--,'   ,--. ,--.   
@@ -208,10 +221,11 @@ while (openMenu)
  |  |   |  |  |  `---. |  | \   |   ('  '-'(_.-' 
  `--'   `--'  `------' `--'  `--'     `-----'    ");
     Print($"\n Type the number based on the action you want to do. \n 1. View stats \n 2. Spend skill points \n 3. Fight an enemy \n 4. Start a boss quest \n 5. Open shop \n 6. Save \n 7. Load a save", 100);
-    a = Console.ReadLine();
+    string a = Console.ReadLine();
     // view stats 
     if (a == "1")
     {
+        // prints out most of the players stats
         Print($"HP:{playerHP}\nDamage:{a1.playerDMG}\nHit Chance:{a1.playerHC}\nCrit Damage:{a1.playerCD}\nCrit Chance{a1.playerCC}\nCoins:{playerCoins}\nRegen:{playerRegen}\n Your current sword is {w.wepondName}", 200);
         Console.ReadLine();
     }
@@ -260,11 +274,14 @@ while (openMenu)
     // Fights a random enenmy
     else if (a == "3")
     {
-
+        // sets variable to true so the player can go back to fighting enemys after exiting 
         wantToFightEnemy = true;
+        // the while loop that enemy are picked in and fights happen
         while (wantToFightEnemy)
         {
+            // gives alternatives for enemys to fight
             Print($"What typer of enemy do you want to fight \n 1. Zombie \n 2. Sprider \n 3. Wolf \n 4. Vampire\n", 350);
+            // Incase player has a slayer quest active than might run one of these
             if (zslayerQuestStarted)
             {
                 if (zexp > 250)
@@ -297,6 +314,7 @@ while (openMenu)
                     canFightSlayer = true;
                 }
             }
+            // defines the string that player input gets put in than checks if its falue is equal to any alternative. if it is than it selects a random enemy from that type.
             string c = Console.ReadLine();
             if (c == "1")
             {
@@ -340,15 +358,16 @@ while (openMenu)
                         e = e12;
                         vslayerQuestStarted = false;
                     }
-                    
+
                 }
             }
+            // sets the chosen enemys stats into the enemy stats 
             enemyHC = e.enemyHC;
             enemyDMG = e.enemyDMG;
             enemyHP = e.enemyHP;
+            // if both enemy and player have hp this runs. it just calculates dmg from both player and enemy than subtrackts this from the others hp.
             while (playerHP > 0 && enemyHP > 0 && wantToFightEnemy)
             {
-                Console.WriteLine(a1.playerDMG);
                 float playerTDMG = 0;
                 float enemyTDMG = 0;
                 // playerTDMG = playerHit(playerDMG, playerHC, playerCC, playerCD);
@@ -361,14 +380,18 @@ while (openMenu)
                 //    int playerDMG, int playerHC, int playerCC, int play
 
             }
+            // runs if player dies
             if (playerHP <= 0)
             {
                 Print("You Died", 500);
                 Console.ReadLine();
             }
+            // runs if enemy dies
             else if (enemyHP <= 0)
             {
+
                 // Print($"{statPoints}",1000); #test
+                // gives player the reward for killing the enemy
                 playerHP += playerRegen;
                 if (playerHP > maxPlayerHP)
                 {
@@ -397,6 +420,7 @@ while (openMenu)
 
                 Print($"You won!!", 500);
                 Print($"You regenerated {playerRegen} hp", 450);
+                // gives player a levelup incase level is high enught
                 if (exp > expNeedForLVL)
                 {
                     exp -= expNeedForLVL;
@@ -405,6 +429,7 @@ while (openMenu)
                     playerCoins += 100;
                     Print($"You leveled up to level {playerLVL} and recived 100 coins and 3 skill points. \nGet {expNeedForLVL} more exp to level up again", 350);
                 }
+                // asks player if they want to kill another mob if yes than goes back to chose enemy
                 Print($"Do you want to kill another", 350);
                 Print("\n 1 To kill another \n 2 To exit to menu", 450);
                 string b = "0";
@@ -424,9 +449,10 @@ while (openMenu)
         }
 
     }
-    // Starts a boss quest  dosent work yet
+    // Starts a boss quest  
     else if (a == "4")
     {
+        // lets player pick slayer quest
         Print($"What slayer quest do you want to start\n1. Zombie \n2. Spider\n3. Wolf\n4. Vampire", 200);
         string b = Console.ReadLine();
         if (b == "1")
@@ -453,6 +479,7 @@ while (openMenu)
     // Opens the shop menu
     else if (a == "5")
     {
+        // lets player buy stats and swords
         Print($"Shop\n You have {playerCoins} \n1. +2 HP cost 10 coin\n 2. +5 DMG cost 10 coin\n 3. +5 Hit Chance cost 10 coin\n 4. Halberd Of The Shreadded cost 100 coin\n 5. Sting cost 100 coin \n 6. Pooch Swrod cost 100 coin \n 7. Atomsplit Kataana cost 100 coin", 650);
         string b = Console.ReadLine();
         if (b == "1")
