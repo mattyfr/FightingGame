@@ -5,7 +5,6 @@ using Microsoft.VisualBasic;
 using System.Globalization;
 using System.Security.AccessControl;
 using System.Linq.Expressions;
-
 // string[] stats = {};
 // start stats
 float enemyKilled = 0;
@@ -140,7 +139,6 @@ Enemy e12 = new() {
     enemyHP = 325,
     enenmyType = "vamp"
 };
-
 Weponds w0 = new()
 {
     wepondName = "",
@@ -188,21 +186,17 @@ Enemy e = list[0];
 List<Weponds> wepondsList = [w0, w1, w2, w3, w4];
 // selects empty wepond in the start
 Weponds w = wepondsList[0];
-
-// ===============================================
 // defines some variables later used to for combat
 float playerHC = a1.playerHC;
 float playerCC = a1.playerCC ;
 float playerCD = a1.playerCD * w.wepondCD;
 float playerDMG = a1.playerDMG * w.wepondDmg;
-// =========================================
 // same as for player
 float enemyStartHP = e.enemyHP;
 float enemyDMG = e.enemyDMG;
 float enemyHC = e.enemyHC;
 float enemyHP = e.enemyHP;
 string enemyName = e.enemyName;
-// =========================================
 // defines the boolean value that starts the game
 bool openMenu = true;
 // The game
@@ -651,16 +645,40 @@ static float chooseAttack(float playerDMG, float playerHC, float playerCC, float
 }
 static string[] load()
 {
-    // Reads all the text in save file located in bin. It saves it into the string array saveStats that is later returned.
-    string[] saveStats = File.ReadAllLines(@"save.txt");
-    return saveStats;
+    // Checks if file exists 
+    if (File.Exists(@"save.txt"))
+    {
+        // If save file exists saves the string array and returns it.
+        string[] saveStats = File.ReadAllLines(@"save.txt");
+        return saveStats;
+    }
+    else
+    {
+        // DIVINE INTELECT
+        // If the file dosent exist it creates one and closes it than dose same as if it exists
+        var statsFolder = File.Create(@"save.txt");
+        statsFolder.Close();
+        string[] saveStats = File.ReadAllLines(@"save.txt");
+        return saveStats;
+    }      
+    
 }
 static void Save(float playerHP, float playerDMG, float playerCD, float playerCC, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float playerHC, float maxPlayerHP)
 {
     // Converts all stats i want to save to strings and puts them in a string array
     string[] saveStats = { playerHP.ToString(), playerDMG.ToString(), playerCD.ToString(), playerCC.ToString(), playerCoins.ToString(), playerRegen.ToString(), playerLVL.ToString(), exp.ToString(), enemyKilled.ToString(), playerHC.ToString(), maxPlayerHP.ToString() };
     // Writes the string array into the text file called save. located somewhere in bin i think.
-    File.WriteAllLines(@"save.txt", saveStats);
+    if (File.Exists(@"save.txt"))
+    {
+        File.WriteAllLines(@"save.txt", saveStats);
+    }
+    else
+    {
+        var statsFolder = File.Create(@"save.txt");
+        statsFolder.Close();
+        File.WriteAllLines(@"save.txt", saveStats);
+    }
+    
 }
 static void UpdateStats(Attacks a1, float playerHC, float playerCC, float playerCD, float playerDMG, Weponds w, float[] floatArray)
 {
@@ -670,4 +688,3 @@ static void UpdateStats(Attacks a1, float playerHC, float playerCC, float player
     a1.playerDMG = floatArray[1] * w.wepondDmg;
 
 }
-
