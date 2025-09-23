@@ -141,7 +141,7 @@ Enemy e12 = new() {
 };
 Weponds w0 = new()
 {
-    wepondName = "",
+    wepondName = "None",
     wepondCD = 1f,
     wepondDmg = 1f,
     wepondStrength = "",
@@ -220,7 +220,7 @@ while (openMenu)
     if (a == "1")
     {
         // prints out most of the players stats
-        Print($"HP:{playerHP}\nDamage:{a1.playerDMG}\nHit Chance:{a1.playerHC}\nCrit Damage:{a1.playerCD}\nCrit Chance{a1.playerCC}\nCoins:{playerCoins}\nRegen:{playerRegen}\n Your current sword is {w.wepondName}", 200);
+        Print($"HP:{playerHP}\nDamage:{a1.playerDMG}\nHit Chance:{a1.playerHC}\nCrit Damage:{a1.playerCD}\nCrit Chance{a1.playerCC}\nCoins:{playerCoins}\nRegen:{playerRegen}\nYour current sword is {w.wepondName}", 200);
         Console.ReadLine();
     }
     // Opens the spend skill points menu
@@ -365,7 +365,7 @@ while (openMenu)
                 float playerTDMG = 0;
                 float enemyTDMG = 0;
                 // playerTDMG = playerHit(playerDMG, playerHC, playerCC, playerCD);
-                playerTDMG = chooseAttack(a1.playerDMG, a1.playerHC, a1.playerCC, a1.playerCD, a1, w);
+                playerTDMG = chooseAttack(a1.playerDMG, a1.playerHC, a1.playerCC, a1.playerCD, a1, w, e);
                 enemyTDMG = enemyHit(enemyHC, enemyDMG, e);
                 playerHP -= enemyTDMG;
                 enemyHP -= playerTDMG;
@@ -591,26 +591,30 @@ static int random()
     return a;
 
 }
-static float normalHit(float playerDMG, float playerHC, float playerCC, float playerCD, float wepondDmg, float wepondCD)
+static float normalHit(float playerDMG, float playerHC, float playerCC, float playerCD, float wepondDmg, float wepondCD,Enemy e ,Weponds w)
 {
     // runns the normal Hit to calc the players damage.
     int a = 0;
     int b = 0;
-    float c = 0;
+    float d = 1;
+    if (e.enenmyType == w.wepondStrength)
+    {
+        d = 2;
+    }
     a = random();
     if (a <= playerHC)
     {
         b = random();
         if (b <= playerCC)
         {
-            c = playerDMG * playerCD;
             Print("Crit!", 120);
-            return c;
+            Print($"{playerDMG}", 120);
+            return playerDMG * playerCD * d;
         }
         else
         {
-            c = playerDMG;
-            return c;
+            Print($"{playerDMG}", 120);
+            return playerDMG * d;
         }
     }
     else
@@ -635,11 +639,10 @@ static float enemyHit(float enemyHC,float  enemyDMG, Enemy e)
         return 0;
     }
 }
-static float chooseAttack(float playerDMG, float playerHC, float playerCC, float playerCD, Attacks a1, Weponds w)
+static float chooseAttack(float playerDMG, float playerHC, float playerCC, float playerCD, Attacks a1, Weponds w, Enemy e)
 {
     // chooses an attack currently there is only one.
-    float playerTDMG = 0;
-    playerTDMG = normalHit(a1.playerDMG, a1.playerHC, a1.playerCC, a1.playerCD, w.wepondDmg, w.wepondCD);
+    float playerTDMG = normalHit(a1.playerDMG, a1.playerHC, a1.playerCC, a1.playerCD, w.wepondDmg, w.wepondCD, e, w);
     return playerTDMG;
 
 }

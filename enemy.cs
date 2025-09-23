@@ -1,7 +1,5 @@
 using System;
-
 namespace FightingGame;
-
 public class Enemy
 {
     public string enemyName = "";
@@ -11,7 +9,6 @@ public class Enemy
     public string enenmyType = "";
 
 }
-
 public class Attacks
 {
     public float playerDMG = 0;
@@ -19,7 +16,6 @@ public class Attacks
     public float playerCC = 0;
     public float playerCD = 0;
 }
-
 public class Weponds
 {
     public string wepondName = "";
