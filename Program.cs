@@ -29,7 +29,7 @@ float vexp = 0;
 // leveling things 
 double dexp = 0;
 float exp = (float)dexp;
-double dexpNeedForLVL = Math.Pow(1.115f, playerLVL) * 100;
+double dexpNeedForLVL = (playerLVL) * 100;
 float expNeedForLVL = (float)dexpNeedForLVL;
 // all classes needed
 Attacks a1 = new()
@@ -633,9 +633,6 @@ while (openMenu)
         a1.playerHC = (floatArray[9]);
         maxPlayerHP = (floatArray[10]);
         playerName = Stats[11];
-
-        // Updates all the player stats. dont know if still needed as i changed how the stats where saved.
-        // UpdateStats(a1, playerHC, playerCC, playerCD, playerDMG, w, floatArray);
     }
 }
 static void Print(string a, int time)
@@ -735,7 +732,6 @@ static string[] load()
         string[] saveStats = File.ReadAllLines(@"save.txt");
         return saveStats;
     }
-
 }
 static void Save(float playerHP, float playerDMG, float playerCD, float playerCC, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float playerHC, float maxPlayerHP, string playerName)
 {
@@ -752,15 +748,6 @@ static void Save(float playerHP, float playerDMG, float playerCD, float playerCC
         statsFolder.Close();
         File.WriteAllLines(@"save.txt", saveStats);
     }
-
-}
-static void UpdateStats(Attacks a1, float playerHC, float playerCC, float playerCD, float playerDMG, Weponds w, float[] floatArray)
-{
-    a1.playerHC = floatArray[9];
-    a1.playerCC = floatArray[3];
-    a1.playerCD = floatArray[2] * w.wepondCD;
-    a1.playerDMG = floatArray[1] * w.wepondDmg;
-
 }
 static string Gamble()
 {
