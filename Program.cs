@@ -6,8 +6,7 @@ using System.Globalization;
 using System.Security.AccessControl;
 using System.Linq.Expressions;
 // start stats
-Print("Enter username", 100);
-string playerName = Console.ReadLine();
+string playerName = "";
 float enemyKilled = 0;
 float playerHP = 30;
 float maxPlayerHP = 30;
@@ -203,6 +202,18 @@ float enemyHC = e.enemyHC;
 float enemyHP = e.enemyHP;
 string enemyName = e.enemyName;
 
+// On start
+Print("Do you want to make a new profile or load a old one\n 1: Make new \n 2: Load old", 120);
+string d = Console.ReadLine();
+if (d == "1")
+{
+    Print("Enter username", 100);
+    playerName = Console.ReadLine();
+}
+else if (d == "2")
+{
+    load();
+}
 // defines the boolean value that starts the game
 bool openMenu = true;
 // The game
