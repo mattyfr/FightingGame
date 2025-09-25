@@ -608,12 +608,12 @@ static float normalHit(float playerDMG, float playerHC, float playerCC, float pl
         if (b <= playerCC)
         {
             Print("Crit!", 120);
-            Print($"{playerDMG}", 120);
+            Print($"{playerDMG* d}", 120);
             return playerDMG * playerCD * d;
         }
         else
         {
-            Print($"{playerDMG}", 120);
+            Print($"{playerDMG * d}", 120);
             return playerDMG * d;
         }
     }
