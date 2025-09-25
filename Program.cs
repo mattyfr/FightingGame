@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Security.AccessControl;
 using System.Linq.Expressions;
 // start stats
-Print("Enter username",100);
+Print("Enter username", 100);
 string playerName = Console.ReadLine();
 float enemyKilled = 0;
 float playerHP = 30;
@@ -29,7 +29,7 @@ float wexp = 0;
 float vexp = 0;
 // leveling things 
 double dexp = 0;
-float exp = (float) dexp;
+float exp = (float)dexp;
 double dexpNeedForLVL = Math.Pow(1.115f, playerLVL) * 100;
 float expNeedForLVL = (float)dexpNeedForLVL;
 // all classes needed
@@ -88,7 +88,8 @@ Enemy e5 = new()
     enemyHP = 100,
     enenmyType = "spider"
 };
-Enemy e6 = new() {
+Enemy e6 = new()
+{
     enemyName = "wolf",
     enemyDMG = 15,
     enemyHC = 45,
@@ -119,21 +120,24 @@ Enemy e9 = new()
     enemyHC = 99,
     enenmyType = "zombie"
 };
-Enemy e10 = new() {
+Enemy e10 = new()
+{
     enemyName = "Tarantula Broodfather",
     enemyDMG = 17,
     enemyHP = 175,
     enemyHC = 99,
     enenmyType = "spider"
 };
-Enemy e11 = new() {
+Enemy e11 = new()
+{
     enemyName = "Sven Packmaster",
     enemyDMG = 31,
     enemyHC = 85,
     enemyHP = 200,
     enenmyType = "wolf"
 };
-Enemy e12 = new() {
+Enemy e12 = new()
+{
     enemyName = "Voidgloom Seraph",
     enemyDMG = 100,
     enemyHC = 99,
@@ -189,7 +193,7 @@ List<Weponds> wepondsList = [w0, w1, w2, w3, w4];
 Weponds w = wepondsList[0];
 // defines some variables later used to for combat
 float playerHC = a1.playerHC;
-float playerCC = a1.playerCC ;
+float playerCC = a1.playerCC;
 float playerCD = a1.playerCD * w.wepondCD;
 float playerDMG = a1.playerDMG * w.wepondDmg;
 // same as for player
@@ -531,13 +535,66 @@ while (openMenu)
             }
 
         }
+        else if (b == "8")
+        {
+            bool wantToBuyMore = true;
+            int wantAutoBuy = 0;
+            while (wantToBuyMore)
+            {
+                if (playerCoins > 100)
+                {
+                    string gambleResult = Gamble();
+                    playerCoins -= 100;
+                    Print(gambleResult, 100);
+                    if (gambleResult == "small win")
+                    {
+                        playerCoins += 150;
+                        Print("You won 150 coins", 150);
+                    }
+                    else if (gambleResult == "medium win")
+                    {
+                        playerCoins += 250;
+                        Print("You won 250 coins", 150);
+                    }
+                    else if (gambleResult == "huge win")
+                    {
+                        playerDMG += 15000;
+                        Print("You won 15000 coins", 150);
+                    }
+                    wantAutoBuy--;
+                    if (wantAutoBuy < 1)
+                    {
+                        Print("Do you whant to buy another gamble \n 1: Yes\n 2: No\n 3: AutoBuy", 120);
+                        a = Console.ReadLine();
+                        if (a == "1")
+                        {
+
+                        }
+                        else if (a == "2")
+                        {
+                            wantToBuyMore = false;
+                        }
+                        else if (a == "3")
+                        {
+                            Print("How many whould you like to auto buy", 120);
+                            string c = Console.ReadLine();
+                            wantAutoBuy = Convert.ToInt32(c);
+                        }
+                    }
+                }
+                else if (playerCoins < 100)
+                {
+                    wantToBuyMore = false;
+                }
+            }
+        }
 
     }
     // Saves most stats 
     else if (a == "6")
     {
         // Calls Save
-        Save(playerHP, playerDMG, playerCD, playerCC, playerCoins, playerRegen, playerLVL, exp, enemyKilled, playerHC, maxPlayerHP);
+        Save(playerHP, playerDMG, playerCD, playerCC, playerCoins, playerRegen, playerLVL, exp, enemyKilled, playerHC, maxPlayerHP, playerName);
     }
     // Loads stats from the save.txt
     else if (a == "7")
@@ -558,9 +615,10 @@ while (openMenu)
         enemyKilled = (floatArray[8]);
         a1.playerHC = (floatArray[9]);
         maxPlayerHP = (floatArray[10]);
+        playerName = Stats[11];
 
         // Updates all the player stats. dont know if still needed as i changed how the stats where saved.
-        UpdateStats(a1, playerHC, playerCC, playerCD, playerDMG, w, floatArray);
+        // UpdateStats(a1, playerHC, playerCC, playerCD, playerDMG, w, floatArray);
     }
 }
 static void Print(string a, int time)
@@ -587,10 +645,10 @@ static int random()
 {
     // gives random value from 1 - 100 
     int a = 0;
-    a = Random.Shared.Next(1, 101);
+    a = Random.Shared.Next(1, 100001);
     return a;
 }
-static float normalHit(float playerDMG, float playerHC, float playerCC, float playerCD, float wepondDmg, float wepondCD,Enemy e ,Weponds w)
+static float normalHit(float playerDMG, float playerHC, float playerCC, float playerCD, float wepondDmg, float wepondCD, Enemy e, Weponds w)
 {
     // runns the normal Hit to calc the players damage.
     int a = 0;
@@ -601,13 +659,13 @@ static float normalHit(float playerDMG, float playerHC, float playerCC, float pl
         d = 2;
     }
     a = random();
-    if (a <= playerHC)
+    if (a / 100 <= playerHC)
     {
         b = random();
-        if (b <= playerCC)
+        if (b / 100 <= playerCC)
         {
             Print("Crit!", 120);
-            Print($"{playerDMG* d}", 120);
+            Print($"{playerDMG * d}", 120);
             return playerDMG * playerCD * d;
         }
         else
@@ -621,13 +679,13 @@ static float normalHit(float playerDMG, float playerHC, float playerCC, float pl
         return 0;
     }
 }
-static float enemyHit(float enemyHC,float  enemyDMG, Enemy e)
+static float enemyHit(float enemyHC, float enemyDMG, Enemy e)
 {
     // calculates the damage of the enemy
     int a = 0;
     float b = 0;
     a = random();
-    if (a <= e.enemyHC)
+    if (a / 100 <= e.enemyHC)
     {
         b = e.enemyDMG;
         return b;
@@ -659,13 +717,13 @@ static string[] load()
         statsFolder.Close();
         string[] saveStats = File.ReadAllLines(@"save.txt");
         return saveStats;
-    }      
-    
+    }
+
 }
-static void Save(float playerHP, float playerDMG, float playerCD, float playerCC, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float playerHC, float maxPlayerHP)
+static void Save(float playerHP, float playerDMG, float playerCD, float playerCC, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float playerHC, float maxPlayerHP, string playerName)
 {
     // Converts all stats i want to save to strings and puts them in a string array
-    string[] saveStats = { playerHP.ToString(), playerDMG.ToString(), playerCD.ToString(), playerCC.ToString(), playerCoins.ToString(), playerRegen.ToString(), playerLVL.ToString(), exp.ToString(), enemyKilled.ToString(), playerHC.ToString(), maxPlayerHP.ToString() };
+    string[] saveStats = { playerHP.ToString(), playerDMG.ToString(), playerCD.ToString(), playerCC.ToString(), playerCoins.ToString(), playerRegen.ToString(), playerLVL.ToString(), exp.ToString(), enemyKilled.ToString(), playerHC.ToString(), maxPlayerHP.ToString(), playerName};
     // Writes the string array into the text file called save. located somewhere in bin i think.
     if (File.Exists(@"save.txt"))
     {
@@ -677,13 +735,37 @@ static void Save(float playerHP, float playerDMG, float playerCD, float playerCC
         statsFolder.Close();
         File.WriteAllLines(@"save.txt", saveStats);
     }
-    
+
 }
 static void UpdateStats(Attacks a1, float playerHC, float playerCC, float playerCD, float playerDMG, Weponds w, float[] floatArray)
 {
-    a1.playerHC = floatArray[2];
-    a1.playerCC = floatArray[4];
-    a1.playerCD = floatArray[3] * w.wepondCD;
+    a1.playerHC = floatArray[9];
+    a1.playerCC = floatArray[3];
+    a1.playerCD = floatArray[2] * w.wepondCD;
     a1.playerDMG = floatArray[1] * w.wepondDmg;
 
+}
+static string Gamble()
+{
+    int id = random();
+    if (id < 50000)
+    {
+        return "loss";
+    }
+    else if (50001 < id && id < 90001)
+    {
+        return "small win";
+    }
+    else if (id < 99990)
+    {
+        return "medium win";
+    }
+    else if (id < 99999)
+    {
+        return "huge win";
+    }
+    else
+    {
+        return "error with gamble";
+    }
 }
