@@ -5,8 +5,9 @@ using Microsoft.VisualBasic;
 using System.Globalization;
 using System.Security.AccessControl;
 using System.Linq.Expressions;
-// string[] stats = {};
 // start stats
+Print("Enter username",100);
+string playerName = Console.ReadLine();
 float enemyKilled = 0;
 float playerHP = 30;
 float maxPlayerHP = 30;
@@ -197,6 +198,7 @@ float enemyDMG = e.enemyDMG;
 float enemyHC = e.enemyHC;
 float enemyHP = e.enemyHP;
 string enemyName = e.enemyName;
+
 // defines the boolean value that starts the game
 bool openMenu = true;
 // The game
@@ -264,6 +266,7 @@ while (openMenu)
             }
 
         }
+        Console.ReadLine();
     }
     // Fights a random enenmy
     else if (a == "3")
@@ -369,10 +372,8 @@ while (openMenu)
                 enemyTDMG = enemyHit(enemyHC, enemyDMG, e);
                 playerHP -= enemyTDMG;
                 enemyHP -= playerTDMG;
-                Print($"player hp:{playerHP} \n{e.enemyName} hp:{enemyHP}", 300);
-
+                Print($"{playerName} hp:{playerHP} \n{e.enemyName} hp:{enemyHP}", 300);
                 //    int playerDMG, int playerHC, int playerCC, int play
-
             }
             // runs if player dies
             if (playerHP <= 0)
@@ -383,8 +384,6 @@ while (openMenu)
             // runs if enemy dies
             else if (enemyHP <= 0)
             {
-
-                // Print($"{statPoints}",1000); #test
                 // gives player the reward for killing the enemy
                 playerHP += playerRegen;
                 if (playerHP > maxPlayerHP)
@@ -410,10 +409,8 @@ while (openMenu)
                     vexp += 25;
                 }
                 playerCoins += Random.Shared.Next(1, 4);
-
-
-                Print($"You won!!", 500);
-                Print($"You regenerated {playerRegen} hp", 450);
+                Print($"{playerName} won!!", 500);
+                Print($"{playerName} regenerated {playerRegen} hp", 450);
                 // gives player a levelup incase level is high enught
                 if (exp > expNeedForLVL)
                 {
@@ -467,7 +464,7 @@ while (openMenu)
         else if (b == "4")
         {
             vslayerQuestStarted = true;
-            vexp =0;
+            vexp = 0;
         }
     }
     // Opens the shop menu
@@ -568,10 +565,14 @@ while (openMenu)
 }
 static void Print(string a, int time)
 {
+    // i = 0 och sätts sedan till längden på det som ska printas 
     for (int i = 0; i < a.Length; i++)
     {
+        // skriver en bokstav 
         Console.Write(a[i]);
+        // väntar tiden delat på längden
         Thread.Sleep(time / a.Length);
+        // så att den hoppar över mellanslag
         if (Console.KeyAvailable == true)
         {
             if (Console.ReadKey().KeyChar == ' ')
@@ -579,7 +580,6 @@ static void Print(string a, int time)
                 time = 0;
             }
         }
-
     }
     Console.Write("\n");
 }
@@ -589,7 +589,6 @@ static int random()
     int a = 0;
     a = Random.Shared.Next(1, 101);
     return a;
-
 }
 static float normalHit(float playerDMG, float playerHC, float playerCC, float playerCD, float wepondDmg, float wepondCD,Enemy e ,Weponds w)
 {
@@ -621,7 +620,6 @@ static float normalHit(float playerDMG, float playerHC, float playerCC, float pl
     {
         return 0;
     }
-
 }
 static float enemyHit(float enemyHC,float  enemyDMG, Enemy e)
 {
@@ -644,7 +642,6 @@ static float chooseAttack(float playerDMG, float playerHC, float playerCC, float
     // chooses an attack currently there is only one.
     float playerTDMG = normalHit(a1.playerDMG, a1.playerHC, a1.playerCC, a1.playerCD, w.wepondDmg, w.wepondCD, e, w);
     return playerTDMG;
-
 }
 static string[] load()
 {
@@ -657,7 +654,6 @@ static string[] load()
     }
     else
     {
-        // DIVINE INTELECT
         // If the file dosent exist it creates one and closes it than dose same as if it exists
         var statsFolder = File.Create(@"save.txt");
         statsFolder.Close();
