@@ -486,31 +486,37 @@ while (openMenu)
     else if (a == "5")
     {
         // lets player buy stats and swords
-        Print($"Shop\n You have {playerCoins} \n1. +2 HP cost 10 coin\n 2. +5 DMG cost 10 coin\n 3. +5 Hit Chance cost 10 coin\n 4. Halberd Of The Shreadded cost 100 coin\n 5. Sting cost 100 coin \n 6. Pooch Swrod cost 100 coin \n 7. Atomsplit Kataana cost 100 coin", 650);
+        Print($"Shop\nYou can only buy the upgrades 5 times\n You have {playerCoins} \n1. +2 HP cost 10 coin\n 2. +5 DMG cost 10 coin\n 3. +5 Hit Chance cost 10 coin\n 4. Halberd Of The Shreadded cost 100 coin\n 5. Sting cost 100 coin \n 6. Pooch Swrod cost 100 coin \n 7. Atomsplit Kataana cost 100 coin", 650);
         string b = Console.ReadLine();
         if (b == "1")
         {
-            if (playerCoins > 10)
+            int maxBuyable = 5;
+            if (playerCoins > 10 && maxBuyable > 0)
             {
                 maxPlayerHP += 2;
                 playerHP += 2;
+                maxBuyable--;
                 playerCoins -= 10;
             }
         }
         else if (b == "2")
         {
-            if (playerCoins > 10)
+            int maxBuyable = 5;
+            if (playerCoins > 10 && maxBuyable > 0)
             {
                 a1.playerDMG += 5;
+                maxBuyable--;
                 playerCoins -= 10;
             }
         }
         else if (b == "3")
         {
-            if (playerCoins > 10)
+            int maxBuyable = 5;
+            if (playerCoins > 10 && maxBuyable > 0)
             {
                 a1.playerHC += 5;
                 playerCoins -= 10;
+                maxBuyable--;
             }
         }
         else if (b == "4")
@@ -734,7 +740,7 @@ static string[] load()
 static void Save(float playerHP, float playerDMG, float playerCD, float playerCC, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float playerHC, float maxPlayerHP, string playerName)
 {
     // Converts all stats i want to save to strings and puts them in a string array
-    string[] saveStats = { playerHP.ToString(), playerDMG.ToString(), playerCD.ToString(), playerCC.ToString(), playerCoins.ToString(), playerRegen.ToString(), playerLVL.ToString(), exp.ToString(), enemyKilled.ToString(), playerHC.ToString(), maxPlayerHP.ToString(), playerName};
+    string[] saveStats = { playerHP.ToString(), playerDMG.ToString(), playerCD.ToString(), playerCC.ToString(), playerCoins.ToString(), playerRegen.ToString(), playerLVL.ToString(), exp.ToString(), enemyKilled.ToString(), playerHC.ToString(), maxPlayerHP.ToString(), playerName };
     // Writes the string array into the text file called save. located somewhere in bin i think.
     if (File.Exists(@"save.txt"))
     {
@@ -758,20 +764,20 @@ static void UpdateStats(Attacks a1, float playerHC, float playerCC, float player
 }
 static string Gamble()
 {
-    int id = random();
-    if (id < 50000)
+    int roll = random();
+    if (roll < 50000)
     {
         return "loss";
     }
-    else if (50001 < id && id < 90001)
+    else if (50001 < roll && roll < 90001)
     {
         return "small win";
     }
-    else if (id < 99990)
+    else if (roll < 99990 && roll < 99999)
     {
         return "medium win";
     }
-    else if (id < 99999)
+    else if (roll < 99999)
     {
         return "huge win";
     }
