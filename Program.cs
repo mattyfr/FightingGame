@@ -236,7 +236,7 @@ while (openMenu)
  |  |   |  |  |  .--'  |  |\    |    |  | | `-' /
  |  |   |  |  |  `---. |  | \   |   ('  '-'(_.-' 
  `--'   `--'  `------' `--'  `--'     `-----'    ");
-    Print($"\n Type the number based on the action you want to do. \n 1. View stats \n 2. Spend skill points \n 3. Fight an enemy \n 4. Start a boss quest \n 5. Open shop \n 6. Save \n 7. Load a save", 100);
+    Print($"\n Type the number based on the action you want to do. \n 1. View stats \n 2. Spend skill points \n 3. Fight an enemy \n 4. Start a boss quest \n 5. Open shop \n 6. Save \n 7. Load a save \n 8. Reset the save file", 100);
     string a = Console.ReadLine();
     // view stats 
     if (a == "1")
@@ -655,11 +655,26 @@ while (openMenu)
     {
         LoadsStats(playerHP, a1, playerCoins, playerRegen, playerLVL, exp, enemyKilled, maxPlayerHP, playerName);
     }
+    //  Reset stats 
+    else if (a == "8")
+    {
+        Print("Are you sure you want to reset your save file? \n 1. Yes \n 2. No", 200);
+        string b = Console.ReadLine();
+        if (b == "1")
+        {
+            string[] resetSave = { "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" };
+            File.WriteAllLines(@"save.txt", resetSave);
+        }
+        else
+        {
+            
+        }
+    }
 }
 if (alive == false)
 {
     Print("You died you save file is now being destroyed XaXaXaXa", 450);
-    string[] resetSave = { "0","0","0","0","0","0","0","0","0","0","0","0" };
+    string[] resetSave = { "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" };
     File.WriteAllLines(@"save.txt", resetSave);
     Console.ReadLine();
 }
@@ -697,9 +712,9 @@ static float normalHit(float playerDMG, float playerHC, float playerCC, float pl
     {
         a = 2;
     }
-    if (random()/100 <= playerHC)
+    if (random() / 100 <= playerHC)
     {
-        if (random()/100 <= playerCC)
+        if (random() / 100 <= playerCC)
         {
             Print("Crit!", 120);
             Print($"{playerDMG * a}", 120);
@@ -719,7 +734,7 @@ static float normalHit(float playerDMG, float playerHC, float playerCC, float pl
 static float enemyHit(float enemyHC, float enemyDMG, Enemy e)
 {
     // calculates the damage of the enemy
-    if (random()/ 100 <= e.enemyHC)
+    if (random() / 100 <= e.enemyHC)
     {
         float a = e.enemyDMG;
         return a;
