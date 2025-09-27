@@ -5,8 +5,12 @@ using Microsoft.VisualBasic;
 using System.Globalization;
 using System.Security.AccessControl;
 using System.Linq.Expressions;
+using System.Security.Cryptography;
+using System.Text;
+
 // start stats
 string playerName = "";
+string playerPassword = "";
 float enemyKilled = 0;
 float playerHP = 30;
 float maxPlayerHP = 30;
@@ -209,10 +213,12 @@ if (d == "1")
 {
     Print("Enter username", 100);
     playerName = Console.ReadLine();
+    Print("Enter password or press enter if you dont want a password", 120);
+    playerPassword = sha256hashing(Console.ReadLine());
 }
 else if (d == "2")
 {
-    load();
+    loadStats();
 }
 // defines the boolean value that starts the game
 bool openMenu = true;
@@ -486,7 +492,7 @@ while (openMenu)
     else if (a == "5")
     {
         // lets player buy stats and swords
-        Print($"Shop\nYou can only buy the upgrades 5 times\n You have {playerCoins} \n1. +2 HP cost 10 coin\n 2. +5 DMG cost 10 coin\n 3. +5 Hit Chance cost 10 coin\n 4. Halberd Of The Shreadded cost 100 coin\n 5. Sting cost 100 coin \n 6. Pooch Swrod cost 100 coin \n 7. Atomsplit Kataana cost 100 coin", 650);
+        Print($"Shop\nYou can only buy the upgrades 5 times\n You have {playerCoins} \n1. +2 HP cost 10 coin\n 2. +5 DMG cost 10 coin\n 3. +5 Hit Chance cost 10 coin\n 4. Halberd Of The Shreadded cost 100 coin\n 5. Sting cost 100 coin \n 6. Pooch Swrod cost 100 coin \n 7. Atomsplit Kataana cost 100 coin \n 8. Gamble", 650);
         string b = Console.ReadLine();
         if (b == "1")
         {
@@ -562,19 +568,50 @@ while (openMenu)
                 {
                     string gambleResult = Gamble();
                     playerCoins -= 100;
-                    Print(gambleResult, 100);
-                    if (gambleResult == "small win")
+                    if (gambleResult == "loss")
                     {
+                        Print(File.ReadAllText("gambling screens\\31.txt"), 0);
+                        Thread.Sleep(1000);
+                        Console.Clear();
+                        Print(File.ReadAllText("gambling screens\\32.txt"), 0);
+                        Thread.Sleep(1000);
+                        Console.Clear();
+                        Print(File.ReadAllText("gambling screens\\33.txt"), 0);
+                        Print("You lost", 100);
+                    }
+                    else if (gambleResult == "small win")
+                    {
+                        Print(File.ReadAllText("gambling screens\\1.txt"), 0);
+                        Thread.Sleep(1000);
+                        Console.Clear();
+                        Print(File.ReadAllText("gambling screens\\2.txt"), 0);
+                        Thread.Sleep(1000);
+                        Console.Clear();
+                        Print(File.ReadAllText("gambling screens\\3.txt"), 0);
                         playerCoins += 150;
                         Print("You won 150 coins", 150);
                     }
                     else if (gambleResult == "medium win")
                     {
+                        Print(File.ReadAllText("gambling screens\\11.txt"), 0);
+                        Thread.Sleep(1000);
+                        Console.Clear();
+                        Print(File.ReadAllText("gambling screens\\12.txt"), 0);
+                        Thread.Sleep(1000);
+                        Console.Clear();
+                        Print(File.ReadAllText("gambling screens\\13.txt"), 0);
                         playerCoins += 250;
                         Print("You won 250 coins", 150);
                     }
                     else if (gambleResult == "huge win")
                     {
+                        Print(File.ReadAllText("gambling screens\\21.txt"), 0);
+                        Thread.Sleep(320);
+                        Console.Clear();
+                        Print(File.ReadAllText("gambling screens\\22.txt"), 0);
+                        Thread.Sleep(320);
+                        Console.Clear();
+                        Print(File.ReadAllText("gambling screens\\23.txt"), 0);
                         playerDMG += 15000;
                         Print("You won 15000 coins", 150);
                     }
@@ -611,28 +648,38 @@ while (openMenu)
     else if (a == "6")
     {
         // Calls Save
-        Save(playerHP, playerDMG, playerCD, playerCC, playerCoins, playerRegen, playerLVL, exp, enemyKilled, playerHC, maxPlayerHP, playerName);
+        Save(playerHP, playerDMG, playerCD, playerCC, playerCoins, playerRegen, playerLVL, exp, enemyKilled, playerHC, maxPlayerHP);
+        usernameSave(playerName, playerPassword);
     }
     // Loads stats from the save.txt
     else if (a == "7")
     {
         // Calls load and saves the returning string array into the string array Stats
-        string[] Stats = load();
+        string[] Stats = loadStats();
+        string[] UsernameInfo = usernameLoad();
         // Takes the string array Stats and coverts it into floats using float.parse and saves it into float array floatArray
         float[] floatArray = Array.ConvertAll(Stats, float.Parse);
-        // takes the value of floatArray and puts it back into the players stats.
-        playerHP = (floatArray[0]);
-        a1.playerDMG = (floatArray[1]);
-        a1.playerCD = (floatArray[2]);
-        a1.playerCC = (floatArray[3]);
-        playerCoins = (floatArray[4]);
-        playerRegen = (floatArray[5]);
-        playerLVL = (floatArray[6]);
-        exp = (floatArray[7]);
-        enemyKilled = (floatArray[8]);
-        a1.playerHC = (floatArray[9]);
-        maxPlayerHP = (floatArray[10]);
-        playerName = Stats[11];
+        Print("Enter password. If you dont have a password just press enter", 120);
+        if (UsernameInfo[1] == sha256hashing(Console.ReadLine()))
+        {
+            // takes the value of floatArray and puts it back into the players stats.
+            playerHP = (floatArray[0]);
+            a1.playerDMG = (floatArray[1]);
+            a1.playerCD = (floatArray[2]);
+            a1.playerCC = (floatArray[3]);
+            playerCoins = (floatArray[4]);
+            playerRegen = (floatArray[5]);
+            playerLVL = (floatArray[6]);
+            exp = (floatArray[7]);
+            enemyKilled = (floatArray[8]);
+            a1.playerHC = (floatArray[9]);
+            maxPlayerHP = (floatArray[10]);
+            playerName = UsernameInfo[0];
+        }
+        else
+        {
+            Print("Wrong password", 120);
+        }
     }
 }
 static void Print(string a, int time)
@@ -715,7 +762,7 @@ static float chooseAttack(float playerDMG, float playerHC, float playerCC, float
     float playerTDMG = normalHit(a1.playerDMG, a1.playerHC, a1.playerCC, a1.playerCD, w.wepondDmg, w.wepondCD, e, w);
     return playerTDMG;
 }
-static string[] load()
+static string[] loadStats()
 {
     // Checks if file exists 
     if (File.Exists(@"save.txt"))
@@ -733,10 +780,39 @@ static string[] load()
         return saveStats;
     }
 }
-static void Save(float playerHP, float playerDMG, float playerCD, float playerCC, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float playerHC, float maxPlayerHP, string playerName)
+static string[] usernameLoad()
+{
+    if (File.Exists(@"UsernameSave"))
+    {
+        string[] usernameSave = File.ReadAllLines(@"UsernameSave");
+        return usernameSave;
+    }
+    else
+    {
+        var usernameSaveFile = File.Create(@"UsernameSave");
+        usernameSaveFile.Close();
+        string[] usernameSave = File.ReadAllLines(@"UsernameSave");
+        return usernameSave;
+    }
+}
+static void usernameSave(string playerName, string playerPassword)
+{
+    string[] usernameData = { playerName, playerPassword };
+    if (File.Exists(@"UsernameSave"))
+    {
+        File.WriteAllLines(@"UsernameSave", usernameData);
+    }
+    else
+    {
+        var usernameSaveFile = File.Create(@"UsernameSave");
+        usernameSaveFile.Close();
+        File.WriteAllLines(@"UsernameSave", usernameData);
+    }
+}
+static void Save(float playerHP, float playerDMG, float playerCD, float playerCC, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float playerHC, float maxPlayerHP)
 {
     // Converts all stats i want to save to strings and puts them in a string array
-    string[] saveStats = { playerHP.ToString(), playerDMG.ToString(), playerCD.ToString(), playerCC.ToString(), playerCoins.ToString(), playerRegen.ToString(), playerLVL.ToString(), exp.ToString(), enemyKilled.ToString(), playerHC.ToString(), maxPlayerHP.ToString(), playerName };
+    string[] saveStats = { playerHP.ToString(), playerDMG.ToString(), playerCD.ToString(), playerCC.ToString(), playerCoins.ToString(), playerRegen.ToString(), playerLVL.ToString(), exp.ToString(), enemyKilled.ToString(), playerHC.ToString(), maxPlayerHP.ToString()};
     // Writes the string array into the text file called save. located somewhere in bin i think.
     if (File.Exists(@"save.txt"))
     {
@@ -771,5 +847,18 @@ static string Gamble()
     else
     {
         return "error with gamble";
+    }
+}
+static string sha256hashing(string input) {
+    using (SHA256 sha256Hash = SHA256.Create())
+    {
+        byte[] byteArray = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+        StringBuilder builder = new StringBuilder();
+        foreach (byte b in byteArray)
+        {
+            builder.Append(b.ToString("x2"));
+        }
+            string hash = builder.ToString();
+            return hash;
     }
 }
