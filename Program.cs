@@ -218,7 +218,7 @@ if (d == "1")
 }
 else if (d == "2")
 {
-    loadStats();
+    SavesStats(playerHP, a1, playerCoins, playerRegen, playerLVL, exp, enemyKilled, maxPlayerHP, playerName);
 }
 // defines the boolean value that starts the game
 bool openMenu = true;
@@ -654,32 +654,7 @@ while (openMenu)
     // Loads stats from the save.txt
     else if (a == "7")
     {
-        // Calls load and saves the returning string array into the string array Stats
-        string[] Stats = loadStats();
-        string[] UsernameInfo = usernameLoad();
-        // Takes the string array Stats and coverts it into floats using float.parse and saves it into float array floatArray
-        float[] floatArray = Array.ConvertAll(Stats, float.Parse);
-        Print("Enter password. If you dont have a password just press enter", 120);
-        if (UsernameInfo[1] == sha256hashing(Console.ReadLine()))
-        {
-            // takes the value of floatArray and puts it back into the players stats.
-            playerHP = (floatArray[0]);
-            a1.playerDMG = (floatArray[1]);
-            a1.playerCD = (floatArray[2]);
-            a1.playerCC = (floatArray[3]);
-            playerCoins = (floatArray[4]);
-            playerRegen = (floatArray[5]);
-            playerLVL = (floatArray[6]);
-            exp = (floatArray[7]);
-            enemyKilled = (floatArray[8]);
-            a1.playerHC = (floatArray[9]);
-            maxPlayerHP = (floatArray[10]);
-            playerName = UsernameInfo[0];
-        }
-        else
-        {
-            Print("Wrong password", 120);
-        }
+        SavesStats(playerHP, a1, playerCoins, playerRegen, playerLVL, exp, enemyKilled, maxPlayerHP, playerName);
     }
 }
 static void Print(string a, int time)
@@ -812,7 +787,7 @@ static void usernameSave(string playerName, string playerPassword)
 static void Save(float playerHP, float playerDMG, float playerCD, float playerCC, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float playerHC, float maxPlayerHP)
 {
     // Converts all stats i want to save to strings and puts them in a string array
-    string[] saveStats = { playerHP.ToString(), playerDMG.ToString(), playerCD.ToString(), playerCC.ToString(), playerCoins.ToString(), playerRegen.ToString(), playerLVL.ToString(), exp.ToString(), enemyKilled.ToString(), playerHC.ToString(), maxPlayerHP.ToString()};
+    string[] saveStats = { playerHP.ToString(), playerDMG.ToString(), playerCD.ToString(), playerCC.ToString(), playerCoins.ToString(), playerRegen.ToString(), playerLVL.ToString(), exp.ToString(), enemyKilled.ToString(), playerHC.ToString(), maxPlayerHP.ToString() };
     // Writes the string array into the text file called save. located somewhere in bin i think.
     if (File.Exists(@"save.txt"))
     {
@@ -849,7 +824,8 @@ static string Gamble()
         return "error with gamble";
     }
 }
-static string sha256hashing(string input) {
+static string sha256hashing(string input)
+{
     using (SHA256 sha256Hash = SHA256.Create())
     {
         byte[] byteArray = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
@@ -858,7 +834,36 @@ static string sha256hashing(string input) {
         {
             builder.Append(b.ToString("x2"));
         }
-            string hash = builder.ToString();
-            return hash;
+        string hash = builder.ToString();
+        return hash;
+    }
+}
+static void SavesStats(float playerHP, Attacks a1, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float maxPlayerHP, string playerName)
+{
+    // Calls load and saves the returning string array into the string array Stats
+    string[] Stats = loadStats();
+    string[] UsernameInfo = usernameLoad();
+    // Takes the string array Stats and coverts it into floats using float.parse and saves it into float array floatArray
+    float[] floatArray = Array.ConvertAll(Stats, float.Parse);
+    Print("Enter password. If you dont have a password just press enter", 120);
+    if (UsernameInfo[1] == sha256hashing(Console.ReadLine()))
+    {
+        // takes the value of floatArray and puts it back into the players stats.
+        playerHP = (floatArray[0]);
+        a1.playerDMG = (floatArray[1]);
+        a1.playerCD = (floatArray[2]);
+        a1.playerCC = (floatArray[3]);
+        playerCoins = (floatArray[4]);
+        playerRegen = (floatArray[5]);
+        playerLVL = (floatArray[6]);
+        exp = (floatArray[7]);
+        enemyKilled = (floatArray[8]);
+        a1.playerHC = (floatArray[9]);
+        maxPlayerHP = (floatArray[10]);
+        playerName = UsernameInfo[0];
+    }
+    else
+    {
+        Print("Wrong password", 120);
     }
 }
