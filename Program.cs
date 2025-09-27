@@ -203,6 +203,8 @@ float enemyDMG = e.enemyDMG;
 float enemyHC = e.enemyHC;
 float enemyHP = e.enemyHP;
 string enemyName = e.enemyName;
+// 
+int[] maxBuy = { 0, 0, 0, };
 // On start
 Print("Do you want to make a new profile or load a old one\n 1: Make new \n 2: Load old", 120);
 string d = Console.ReadLine();
@@ -496,33 +498,30 @@ while (openMenu)
         string b = Console.ReadLine();
         if (b == "1")
         {
-            int maxBuyable = 5;
-            if (playerCoins > 10 && maxBuyable > 0)
+            if (playerCoins > 10 && maxBuy[0] < 5)
             {
                 maxPlayerHP += 2;
                 playerHP += 2;
-                maxBuyable--;
+                maxBuy[0] += 1;
                 playerCoins -= 10;
             }
         }
         else if (b == "2")
         {
-            int maxBuyable = 5;
-            if (playerCoins > 10 && maxBuyable > 0)
+            if (playerCoins > 10 && maxBuy[1] < 5)
             {
                 a1.playerDMG += 5;
-                maxBuyable--;
+                maxBuy[1] += 1;
                 playerCoins -= 10;
             }
         }
         else if (b == "3")
         {
-            int maxBuyable = 5;
-            if (playerCoins > 10 && maxBuyable > 0)
+            if (playerCoins > 10 && maxBuy[2] < 5)
             {
                 a1.playerHC += 5;
                 playerCoins -= 10;
-                maxBuyable--;
+                maxBuy[2] += 1;
             }
         }
         else if (b == "4")
