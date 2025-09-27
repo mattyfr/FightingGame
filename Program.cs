@@ -495,8 +495,8 @@ while (openMenu)
     {
         // lets player buy stats and swords
         Print($"Shop\nYou can only buy the upgrades 5 times\n You have {playerCoins} \n1. +2 HP cost 10 coin\n 2. +5 DMG cost 10 coin\n 3. +5 Hit Chance cost 10 coin\n 4. Halberd Of The Shreadded cost 100 coin\n 5. Sting cost 100 coin \n 6. Pooch Swrod cost 100 coin \n 7. Atomsplit Kataana cost 100 coin \n 8. Gamble", 650);
-        string b = Console.ReadLine();
-        if (b == "1")
+        string ShopDesition = Console.ReadLine();
+        if (ShopDesition == "1")
         {
             if (playerCoins > 10 && maxBuy[0] < 5)
             {
@@ -504,60 +504,90 @@ while (openMenu)
                 playerHP += 2;
                 maxBuy[0] += 1;
                 playerCoins -= 10;
+                Print($"You bought Player HP upgrade {maxBuy[0]}/5", 100);
+                Thread.Sleep(333);
             }
+            if (maxBuy[0] >= 5)
+            {
+                Print("You reached max buy already", 120);
+                Console.ReadKey();
+            }
+
         }
-        else if (b == "2")
+        else if (ShopDesition == "2")
         {
             if (playerCoins > 10 && maxBuy[1] < 5)
             {
                 a1.playerDMG += 5;
                 maxBuy[1] += 1;
                 playerCoins -= 10;
+                Print($"You bought Player Dmg upgrade {maxBuy[1]}/5", 100);
+                Thread.Sleep(333);
+            }
+            if (maxBuy[1] >= 5)
+            {
+                Print("You reached max buy already", 120);
+                Console.ReadKey();
             }
         }
-        else if (b == "3")
+        else if (ShopDesition == "3")
         {
             if (playerCoins > 10 && maxBuy[2] < 5)
             {
                 a1.playerHC += 5;
                 playerCoins -= 10;
                 maxBuy[2] += 1;
+                Print($"You bought Player Hit chance upgrade {maxBuy[2]}/5", 100);
+                Thread.Sleep(333);
+            }
+            if (maxBuy[2] >= 5)
+            {
+                Print("You reached max buy already", 120);
+                Console.ReadKey();
             }
         }
-        else if (b == "4")
+        else if (ShopDesition == "4")
         {
             if (playerCoins > 100)
             {
                 w = w1;
                 playerCoins -= 100;
+                Print($"You now have {w.wepondName} equiped", 125);
+                Thread.Sleep(333);
             }
         }
-        else if (b == "5")
+        else if (ShopDesition == "5")
         {
             if (playerCoins > 100)
             {
                 w = w2;
                 playerCoins -= 100;
+                Print($"You now have {w.wepondName} equiped", 125);
+                Thread.Sleep(333);
             }
         }
-        else if (b == "6")
+        else if (ShopDesition == "6")
         {
             if (playerCoins > 100)
             {
                 w = w3;
                 playerCoins -= 100;
+                Print($"You now have {w.wepondName} equiped", 125);
+                Thread.Sleep(333);
             }
         }
-        else if (b == "7")
+        else if (ShopDesition == "7")
         {
             if (playerCoins > 100)
             {
                 w = w4;
                 playerCoins -= 100;
+                Print($"You now have {w.wepondName} equiped", 125);
+                Thread.Sleep(333);
             }
 
         }
-        else if (b == "8")
+        else if (ShopDesition == "8")
         {
             bool wantToBuyMore = true;
             int wantAutoBuy = 0;
@@ -878,5 +908,7 @@ static void LoadsStats(float playerHP, Attacks a1, float playerCoins, float play
     else
     {
         Print("Wrong password", 120);
+        Console.ReadKey();
+        System.Environment.Exit(1);
     }
 }
