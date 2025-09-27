@@ -7,7 +7,7 @@ using System.Security.AccessControl;
 using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
-
+// using devine.intelect;
 // start stats
 string playerName = "";
 string playerPassword = "";
@@ -25,6 +25,7 @@ bool sslayerQuestStarted = false;
 bool wslayerQuestStarted = false;
 bool vslayerQuestStarted = false;
 bool canFightSlayer = false;
+bool alive = true;
 // base value for the exp of eatch type
 float zexp = 0;
 float sexp = 0;
@@ -183,17 +184,14 @@ Weponds w4 = new()
     wepondStrength = "vamp"
 };
 // some lists one for eatch mob type
-List<Enemy> list = [e0, e1, e2, e3, e5, e6, e7, e8];
 List<Enemy> zlist = [e1, e2, e3];
 List<Enemy> slist = [e4, e5];
 List<Enemy> wlist = [e6, e7];
 List<Enemy> vlist = [e8];
 // selects an empty enemy in the start (gets changed before first fight)
-Enemy e = list[0];
-// list with all weponds
-List<Weponds> wepondsList = [w0, w1, w2, w3, w4];
+Enemy e = e0;
 // selects empty wepond in the start
-Weponds w = wepondsList[0];
+Weponds w = w0;
 // defines some variables later used to for combat
 float playerHC = a1.playerHC;
 float playerCC = a1.playerCC;
@@ -205,7 +203,6 @@ float enemyDMG = e.enemyDMG;
 float enemyHC = e.enemyHC;
 float enemyHP = e.enemyHP;
 string enemyName = e.enemyName;
-
 // On start
 Print("Do you want to make a new profile or load a old one\n 1: Make new \n 2: Load old", 120);
 string d = Console.ReadLine();
@@ -218,7 +215,7 @@ if (d == "1")
 }
 else if (d == "2")
 {
-    SavesStats(playerHP, a1, playerCoins, playerRegen, playerLVL, exp, enemyKilled, maxPlayerHP, playerName);
+    LoadsStats(playerHP, a1, playerCoins, playerRegen, playerLVL, exp, enemyKilled, maxPlayerHP, playerName);
 }
 // defines the boolean value that starts the game
 bool openMenu = true;
@@ -400,7 +397,10 @@ while (openMenu)
             if (playerHP <= 0)
             {
                 Print("You Died", 500);
+                alive = false;
+                openMenu = false;
                 Console.ReadLine();
+                break;
             }
             // runs if enemy dies
             else if (enemyHP <= 0)
@@ -529,7 +529,7 @@ while (openMenu)
         {
             if (playerCoins > 100)
             {
-                w = wepondsList[1];
+                w = w1;
                 playerCoins -= 100;
             }
         }
@@ -537,7 +537,7 @@ while (openMenu)
         {
             if (playerCoins > 100)
             {
-                w = wepondsList[2];
+                w = w2;
                 playerCoins -= 100;
             }
         }
@@ -545,7 +545,7 @@ while (openMenu)
         {
             if (playerCoins > 100)
             {
-                w = wepondsList[3];
+                w = w3;
                 playerCoins -= 100;
             }
         }
@@ -553,7 +553,7 @@ while (openMenu)
         {
             if (playerCoins > 100)
             {
-                w = wepondsList[4];
+                w = w4;
                 playerCoins -= 100;
             }
 
@@ -654,8 +654,15 @@ while (openMenu)
     // Loads stats from the save.txt
     else if (a == "7")
     {
-        SavesStats(playerHP, a1, playerCoins, playerRegen, playerLVL, exp, enemyKilled, maxPlayerHP, playerName);
+        LoadsStats(playerHP, a1, playerCoins, playerRegen, playerLVL, exp, enemyKilled, maxPlayerHP, playerName);
     }
+}
+if (alive == false)
+{
+    Print("You died you save file is now being destroyed XaXaXaXa", 450);
+    string[] resetSave = { "0","0","0","0","0","0","0","0","0","0","0","0" };
+    File.WriteAllLines(@"save.txt", resetSave);
+    Console.ReadLine();
 }
 static void Print(string a, int time)
 {
@@ -679,35 +686,30 @@ static void Print(string a, int time)
 }
 static int random()
 {
-    // gives random value from 1 - 100 
-    int a = 0;
-    a = Random.Shared.Next(1, 100001);
+    // gives random value from 1 - 10000 
+    int a = Random.Shared.Next(1, 10001);
     return a;
 }
 static float normalHit(float playerDMG, float playerHC, float playerCC, float playerCD, float wepondDmg, float wepondCD, Enemy e, Weponds w)
 {
     // runns the normal Hit to calc the players damage.
-    int a = 0;
-    int b = 0;
-    float d = 1;
+    float a = 1;
     if (e.enenmyType == w.wepondStrength)
     {
-        d = 2;
+        a = 2;
     }
-    a = random();
-    if (a / 100 <= playerHC)
+    if (random()/100 <= playerHC)
     {
-        b = random();
-        if (b / 100 <= playerCC)
+        if (random()/100 <= playerCC)
         {
             Print("Crit!", 120);
-            Print($"{playerDMG * d}", 120);
-            return playerDMG * playerCD * d;
+            Print($"{playerDMG * a}", 120);
+            return playerDMG * playerCD * a;
         }
         else
         {
-            Print($"{playerDMG * d}", 120);
-            return playerDMG * d;
+            Print($"{playerDMG * a}", 120);
+            return playerDMG * a;
         }
     }
     else
@@ -718,13 +720,10 @@ static float normalHit(float playerDMG, float playerHC, float playerCC, float pl
 static float enemyHit(float enemyHC, float enemyDMG, Enemy e)
 {
     // calculates the damage of the enemy
-    int a = 0;
-    float b = 0;
-    a = random();
-    if (a / 100 <= e.enemyHC)
+    if (random()/ 100 <= e.enemyHC)
     {
-        b = e.enemyDMG;
-        return b;
+        float a = e.enemyDMG;
+        return a;
     }
     else
     {
@@ -803,19 +802,19 @@ static void Save(float playerHP, float playerDMG, float playerCD, float playerCC
 static string Gamble()
 {
     int roll = random();
-    if (roll < 50000)
+    if (roll < 5000)
     {
         return "loss";
     }
-    else if (50001 < roll && roll < 90001)
+    else if (5001 < roll && roll < 9001)
     {
         return "small win";
     }
-    else if (roll < 99990 && roll < 99999)
+    else if (roll < 9990 && roll < 9999)
     {
         return "medium win";
     }
-    else if (roll < 99999)
+    else if (roll < 9999)
     {
         return "huge win";
     }
@@ -838,7 +837,7 @@ static string sha256hashing(string input)
         return hash;
     }
 }
-static void SavesStats(float playerHP, Attacks a1, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float maxPlayerHP, string playerName)
+static void LoadsStats(float playerHP, Attacks a1, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float maxPlayerHP, string playerName)
 {
     // Calls load and saves the returning string array into the string array Stats
     string[] Stats = loadStats();
