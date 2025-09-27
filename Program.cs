@@ -248,45 +248,52 @@ while (openMenu)
     // Opens the spend skill points menu
     else if (a == "2")
     {
-        while (statPoints > 0)
+        if (statPoints > 0)
         {
-            Print($"you have {statPoints} avalable \n your current base stats are \n Hp:{playerHP}                       press 1 to increase by 3\n Damage:{a1.playerDMG}                    press 2 to increase by 1 \n Hit chance:{a1.playerHC}               press 3 to increase by 3\n Crit chance:{a1.playerCC}              press 4 to increase by 3\n Crit Damage:{a1.playerCD}               press 5 to increase by 1\n Player health regen:{playerRegen}      press 6 to increase by 1", 750);
-            string b = Console.ReadLine();
-            if (b == "1")
+            while (statPoints >= 1)
             {
-                playerHP += 3;
-                maxPlayerHP += 3;
-                statPoints -= 1;
+                Print($"you have {statPoints} avalable \n your current base stats are \n Hp:{playerHP}                       press 1 to increase by 3\n Damage:{a1.playerDMG}                    press 2 to increase by 1 \n Hit chance:{a1.playerHC}               press 3 to increase by 3\n Crit chance:{a1.playerCC}              press 4 to increase by 3\n Crit Damage:{a1.playerCD}               press 5 to increase by 1\n Player health regen:{playerRegen}      press 6 to increase by 1", 750);
+                string b = Console.ReadLine();
+                if (b == "1")
+                {
+                    playerHP += 3;
+                    maxPlayerHP += 3;
+                    statPoints -= 1;
+
+                }
+                else if (b == "2")
+                {
+                    a1.playerDMG += 1;
+                    statPoints -= 1;
+                }
+                else if (b == "3")
+                {
+                    a1.playerHC += 3;
+                    statPoints -= 1;
+                }
+                else if (b == "4")
+                {
+                    a1.playerCC += 3;
+                    statPoints -= 1;
+                }
+                else if (b == "5")
+                {
+                    a1.playerCD += 1;
+                    statPoints -= 1;
+                }
+                else if (b == "6")
+                {
+                    playerRegen += 1;
+                    statPoints -= 1;
+                }
 
             }
-            else if (b == "2")
-            {
-                a1.playerDMG += 1;
-                statPoints -= 1;
-            }
-            else if (b == "3")
-            {
-                a1.playerHC += 3;
-                statPoints -= 1;
-            }
-            else if (b == "4")
-            {
-                a1.playerCC += 3;
-                statPoints -= 1;
-            }
-            else if (b == "5")
-            {
-                a1.playerCD += 1;
-                statPoints -= 1;
-            }
-            else if (b == "6")
-            {
-                playerRegen += 1;
-                statPoints -= 1;
-            }
-
         }
-        Console.ReadLine();
+        else
+        {
+            Print("You currently dont have more skill points try leveling up to get more", 120);
+        }
+        Thread.Sleep(450);
     }
     // Fights a random enenmy
     else if (a == "3")
@@ -846,19 +853,19 @@ static void Save(float playerHP, float playerDMG, float playerCD, float playerCC
 static string Gamble()
 {
     int roll = random();
-    if (roll < 5000)
+    if (roll < 3500)
     {
         return "loss";
     }
-    else if (5001 < roll && roll < 9001)
+    else if (3500 < roll && roll < 9000)
     {
         return "small win";
     }
-    else if (roll < 9990 && roll < 9999)
+    else if (roll > 9000 && roll < 9990)
     {
         return "medium win";
     }
-    else if (roll < 9999)
+    else if (roll < 9990)
     {
         return "huge win";
     }
