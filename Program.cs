@@ -1,10 +1,5 @@
 ﻿using System.Runtime.Serialization;
-using System.IO;
 using FightingGame;
-using Microsoft.VisualBasic;
-using System.Globalization;
-using System.Security.AccessControl;
-using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
 // using devine.intelect;
@@ -160,29 +155,21 @@ Weponds w0 = new()
 Weponds w1 = new()
 {
     wepondName = "Halberd Of The Shredded",
-    wepondCD = 1.5f,
-    wepondDmg = 1.5f,
     wepondStrength = "zombie"
 };
 Weponds w2 = new()
 {
     wepondName = "Sting",
-    wepondCD = 1.5f,
-    wepondDmg = 1.5f,
     wepondStrength = "spider"
 };
 Weponds w3 = new()
 {
     wepondName = "Pooch Sword",
-    wepondCD = 1.5f,
-    wepondDmg = 1.5f,
     wepondStrength = "wolf"
 };
 Weponds w4 = new()
 {
     wepondName = "Atomsplit Katana",
-    wepondCD = 1.5f,
-    wepondDmg = 1.5f,
     wepondStrength = "vamp"
 };
 // some lists one for eatch mob type
@@ -194,17 +181,11 @@ List<Enemy> vlist = [e8];
 Enemy e = e0;
 // selects empty wepond in the start
 Weponds w = w0;
-// defines some variables later used to for combat
-float playerHC = a1.playerHC;
-float playerCC = a1.playerCC;
-float playerCD = a1.playerCD * w.wepondCD;
-float playerDMG = a1.playerDMG * w.wepondDmg;
+
+a1.playerCD *= w.wepondCD;
+a1.playerDMG *= w.wepondDmg;
 // same as for player
 float enemyStartHP = e.enemyHP;
-float enemyDMG = e.enemyDMG;
-float enemyHC = e.enemyHC;
-float enemyHP = e.enemyHP;
-string enemyName = e.enemyName;
 // 
 int[] maxBuy = { 0, 0, 0, };
 // On start
@@ -341,24 +322,24 @@ while (openMenu)
                 }
             }
             // defines the string that player input gets put in than checks if its falue is equal to any alternative. if it is than it selects a random enemy from that type.
-            string c = Console.ReadLine();
-            if (c == "1")
+            string ChosenEnemy = Console.ReadLine();
+            if (ChosenEnemy == "1")
             {
                 e = zlist[Random.Shared.Next(zlist.Count)];
             }
-            else if (c == "2")
+            else if (ChosenEnemy == "2")
             {
                 e = slist[Random.Shared.Next(slist.Count)];
             }
-            else if (c == "3")
+            else if (ChosenEnemy == "3")
             {
                 e = wlist[Random.Shared.Next(wlist.Count)];
             }
-            else if (c == "4")
+            else if (ChosenEnemy == "4")
             {
                 e = vlist[Random.Shared.Next(vlist.Count)];
             }
-            else if (c == "5")
+            else if (ChosenEnemy == "5")
             {
                 if (canFightSlayer)
                 {
@@ -366,7 +347,6 @@ while (openMenu)
                     {
                         e = e9;
                         zslayerQuestStarted = false;
-
                     }
                     else if (sslayerQuestStarted)
                     {
@@ -377,32 +357,25 @@ while (openMenu)
                     {
                         e = e11;
                         wslayerQuestStarted = false;
-
                     }
                     else if (vslayerQuestStarted)
                     {
                         e = e12;
                         vslayerQuestStarted = false;
                     }
-
                 }
             }
-            // sets the chosen enemys stats into the enemy stats 
-            enemyHC = e.enemyHC;
-            enemyDMG = e.enemyDMG;
-            enemyHP = e.enemyHP;
             // if both enemy and player have hp this runs. it just calculates dmg from both player and enemy than subtrackts this from the others hp.
-            while (playerHP > 0 && enemyHP > 0 && wantToFightEnemy)
+            while (playerHP > 0 && e.enemyHP > 0 && wantToFightEnemy)
             {
                 float playerTDMG = 0;
                 float enemyTDMG = 0;
                 // playerTDMG = playerHit(playerDMG, playerHC, playerCC, playerCD);
                 playerTDMG = chooseAttack(a1.playerDMG, a1.playerHC, a1.playerCC, a1.playerCD, a1, w, e);
-                enemyTDMG = enemyHit(enemyHC, enemyDMG, e);
+                enemyTDMG = enemyHit(e.enemyHC, e.enemyDMG, e);
                 playerHP -= enemyTDMG;
-                enemyHP -= playerTDMG;
-                Print($"{playerName} hp:{playerHP} \n{e.enemyName} hp:{enemyHP}", 300);
-                //    int playerDMG, int playerHC, int playerCC, int play
+                e.enemyHP -= playerTDMG;
+                Print($"{playerName} hp:{playerHP} \n{e.enemyName} hp:{e.enemyHP}", 300);
             }
             // runs if player dies
             if (playerHP <= 0)
@@ -414,7 +387,7 @@ while (openMenu)
                 break;
             }
             // runs if enemy dies
-            else if (enemyHP <= 0)
+            else if (e.enemyHP <= 0)
             {
                 // gives player the reward for killing the enemy
                 playerHP += playerRegen;
@@ -433,12 +406,12 @@ while (openMenu)
                     }
                     if (e.enenmyType == "sprider")
                     {
-                        playerCC += 0.25f;
+                        a1.playerCC += 0.25f;
                         Print("Boss killed you gained 0.25 crit chance", 120);
                     }
                     if (e.enenmyType == "wolf")
                     {
-                        playerCD += 0.2f;
+                        a1.playerCD += 0.2f;
                         Print("Boss killed you gained 0.2 crit damage", 120);
                     }
                     if (e.enenmyType == "vamp")
@@ -689,7 +662,7 @@ while (openMenu)
                         Thread.Sleep(320);
                         Console.Clear();
                         Print(File.ReadAllText("gambling screens\\23.txt"), 0);
-                        playerDMG += 15000;
+                        a1.playerDMG += 15000;
                         Print("You won 15000 coins", 150);
                     }
                     wantAutoBuy--;
@@ -725,7 +698,7 @@ while (openMenu)
     else if (a == "6")
     {
         // Calls Save
-        Save(playerHP, playerDMG, playerCD, playerCC, playerCoins, playerRegen, playerLVL, exp, enemyKilled, playerHC, maxPlayerHP);
+        Save(playerHP, a1.playerDMG, a1.playerCD, a1.playerCC, playerCoins, playerRegen, playerLVL, exp, enemyKilled, a1.playerHC, maxPlayerHP);
         usernameSave(playerName, playerPassword);
     }
     // Loads stats from the save.txt
@@ -796,7 +769,7 @@ static float normalHit(float playerDMG, float playerHC, float playerCC, float pl
         {
             Print("Crit!", 120);
             Print($"{playerDMG * a}", 120);
-            return playerDMG * playerCD * a;
+            return playerDMG * playerCD * a ;
         }
         else
         {
