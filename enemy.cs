@@ -1,5 +1,6 @@
 using System;
 namespace FightingGame;
+
 public class Enemy
 {
     public string enemyName = "";
@@ -7,6 +8,7 @@ public class Enemy
     public float enemyHC = 0;
     public float enemyHP = 0;
     public string enenmyType = "";
+    public bool enemyBoss = false;
 
 }
 public class Attacks

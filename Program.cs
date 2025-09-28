@@ -32,10 +32,8 @@ float sexp = 0;
 float wexp = 0;
 float vexp = 0;
 // leveling things 
-double dexp = 0;
-float exp = (float)dexp;
-double dexpNeedForLVL = (playerLVL) * 100;
-float expNeedForLVL = (float)dexpNeedForLVL;
+float exp = 0;
+float expNeedForLVL = 100;
 // all classes needed
 Attacks a1 = new()
 {
@@ -122,7 +120,8 @@ Enemy e9 = new()
     enemyDMG = 15,
     enemyHP = 125,
     enemyHC = 99,
-    enenmyType = "zombie"
+    enenmyType = "zombie",
+    enemyBoss = true
 };
 Enemy e10 = new()
 {
@@ -130,7 +129,8 @@ Enemy e10 = new()
     enemyDMG = 17,
     enemyHP = 175,
     enemyHC = 99,
-    enenmyType = "spider"
+    enenmyType = "spider",
+    enemyBoss = true
 };
 Enemy e11 = new()
 {
@@ -138,7 +138,8 @@ Enemy e11 = new()
     enemyDMG = 31,
     enemyHC = 85,
     enemyHP = 200,
-    enenmyType = "wolf"
+    enenmyType = "wolf",
+    enemyBoss = true
 };
 Enemy e12 = new()
 {
@@ -146,7 +147,8 @@ Enemy e12 = new()
     enemyDMG = 100,
     enemyHC = 99,
     enemyHP = 325,
-    enenmyType = "vamp"
+    enenmyType = "vamp",
+    enemyBoss = true
 };
 Weponds w0 = new()
 {
@@ -420,23 +422,61 @@ while (openMenu)
                 {
                     playerHP = maxPlayerHP;
                 }
+                if (e.enemyBoss)
+                {
+                    if (e.enenmyType == "zombie")
+                    {
+                        maxPlayerHP += 1;
+                        playerHP += 1;
+                        Print("Boss killed you gained 1Hp", 120);
+
+                    }
+                    if (e.enenmyType == "sprider")
+                    {
+                        playerCC += 0.25f;
+                        Print("Boss killed you gained 0.25 crit chance", 120);
+                    }
+                    if (e.enenmyType == "wolf")
+                    {
+                        playerCD += 0.2f;
+                        Print("Boss killed you gained 0.2 crit damage", 120);
+                    }
+                    if (e.enenmyType == "vamp")
+                    {
+                        playerCoins += 250;
+                        Print("Boss killed you gained 250 coins", 120);
+                    }
+                }
                 enemyKilled += 1;
-                exp += 25;
+                int expBoost = 0;
+                if (e.enenmyType == "spider")
+                {
+                    expBoost = 10;
+                }
+                else if (e.enenmyType == "wolf")
+                {
+                    expBoost = 25;
+                }
+                else if (e.enenmyType == "vamp")
+                {
+                    expBoost = 50;
+                }
+                exp += 25 + expBoost;
                 if (e.enenmyType == "zombie")
                 {
                     zexp += 25;
                 }
                 else if (e.enenmyType == "spider")
                 {
-                    sexp += 25;
+                    sexp += 30;
                 }
                 else if (e.enenmyType == "wolf")
                 {
-                    wexp += 25;
+                    wexp += 35;
                 }
                 else if (e.enenmyType == "vamp")
                 {
-                    vexp += 25;
+                    vexp += 40;
                 }
                 playerCoins += Random.Shared.Next(1, 4);
                 Print($"{playerName} won!!", 500);
@@ -448,6 +488,7 @@ while (openMenu)
                     playerLVL += 1;
                     statPoints += 3;
                     playerCoins += 100;
+                    expNeedForLVL *= 1.15f;
                     Print($"You leveled up to level {playerLVL} and recived 100 coins and 3 skill points. \nGet {expNeedForLVL} more exp to level up again", 350);
                 }
                 // asks player if they want to kill another mob if yes than goes back to chose enemy
@@ -501,14 +542,14 @@ while (openMenu)
     else if (a == "5")
     {
         // lets player buy stats and swords
-        Print($"Shop\nYou can only buy the upgrades 5 times\n You have {playerCoins} \n1. +2 HP cost 10 coin\n 2. +5 DMG cost 10 coin\n 3. +5 Hit Chance cost 10 coin\n 4. Halberd Of The Shreadded cost 100 coin\n 5. Sting cost 100 coin \n 6. Pooch Swrod cost 100 coin \n 7. Atomsplit Kataana cost 100 coin \n 8. Gamble", 650);
+        Print($"Shop\nYou can only buy the upgrades 5 times\n You have {playerCoins} \n1. +4 HP cost 10 coin\n 2. +5 DMG cost 10 coin\n 3. +5 Hit Chance cost 10 coin\n 4. Halberd Of The Shreadded cost 100 coin\n 5. Sting cost 100 coin \n 6. Pooch Swrod cost 100 coin \n 7. Atomsplit Kataana cost 100 coin \n 8. Gamble", 650);
         string ShopDesition = Console.ReadLine();
         if (ShopDesition == "1")
         {
             if (playerCoins > 10 && maxBuy[0] < 5)
             {
-                maxPlayerHP += 2;
-                playerHP += 2;
+                maxPlayerHP += 4;
+                playerHP += 4;
                 maxBuy[0] += 1;
                 playerCoins -= 10;
                 Print($"You bought Player HP upgrade {maxBuy[0]}/5", 100);
