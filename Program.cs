@@ -2,7 +2,6 @@
 using FightingGame;
 using System.Security.Cryptography;
 using System.Text;
-// using devine.intelect;
 // start stats
 string playerName = "";
 string playerPassword = "";
@@ -181,12 +180,9 @@ List<Enemy> vlist = [e8];
 Enemy e = e0;
 // selects empty wepond in the start
 Weponds w = w0;
-
-a1.playerCD *= w.wepondCD;
-a1.playerDMG *= w.wepondDmg;
-// same as for player
+// used to make sure e.enemyHp dosent change insted enemy start hp is changed
 float enemyStartHP = e.enemyHP;
-// 
+// Defines an int array with 3 values used in the shop to count how many times stat bosts been bought from the shop
 int[] maxBuy = { 0, 0, 0, };
 // On start
 Print("Do you want to make a new profile or load a old one\n 1: Make new \n 2: Load old", 120);
@@ -202,10 +198,8 @@ else if (d == "2")
 {
     LoadsStats(playerHP, a1, playerCoins, playerRegen, playerLVL, exp, enemyKilled, maxPlayerHP, playerName);
 }
-// defines the boolean value that starts the game
-bool openMenu = true;
 // The game
-while (openMenu)
+while (alive)
 {
     // clears console to remove pervius messeges
     Console.Clear();
@@ -274,7 +268,8 @@ while (openMenu)
         }
         else
         {
-            Print("You currently dont have more skill points try leveling up to get more", 120);
+            Print($"You currently dont have more skill points try leveling up to get more\n your current base stats are \n Hp:{playerHP}\n Damage:{a1.playerDMG}\n Hit chance:{a1.playerHC}\n Crit chance:{a1.playerCC}\n Crit Damage:{a1.playerCD}\n Player health regen:{playerRegen}", 120);
+            Console.ReadKey();
         }
         Thread.Sleep(450);
     }
@@ -365,6 +360,7 @@ while (openMenu)
                     }
                 }
             }
+            enemyStartHP = e.enemyHP;
             // if both enemy and player have hp this runs. it just calculates dmg from both player and enemy than subtrackts this from the others hp.
             while (playerHP > 0 && e.enemyHP > 0 && wantToFightEnemy)
             {
@@ -374,15 +370,14 @@ while (openMenu)
                 playerTDMG = chooseAttack(a1.playerDMG, a1.playerHC, a1.playerCC, a1.playerCD, a1, w, e);
                 enemyTDMG = enemyHit(e.enemyHC, e.enemyDMG, e);
                 playerHP -= enemyTDMG;
-                e.enemyHP -= playerTDMG;
-                Print($"{playerName} hp:{playerHP} \n{e.enemyName} hp:{e.enemyHP}", 300);
+                enemyStartHP -= playerTDMG;
+                Print($"{playerName} hp:{playerHP} \n{e.enemyName} hp:{enemyStartHP}", 300);
             }
             // runs if player dies
             if (playerHP <= 0)
             {
                 Print("You Died", 500);
                 alive = false;
-                openMenu = false;
                 Console.ReadLine();
                 break;
             }
@@ -480,9 +475,7 @@ while (openMenu)
                 }
                 // Print($"{e.enemyName}",20); #test making sure it changed enemy
             }
-
         }
-
     }
     // Starts a boss quest  
     else if (a == "4")
