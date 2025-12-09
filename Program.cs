@@ -2,6 +2,8 @@
 using FightingGame;
 using System.Security.Cryptography;
 using System.Text;
+using System.Linq.Expressions;
+using Microsoft.VisualBasic;
 // start stats
 string playerName = "";
 string playerPassword = "";
@@ -12,6 +14,7 @@ float statPoints = 10;
 float playerRegen = 20;
 float playerCoins = 0;
 float playerLVL = 1;
+int i = 0;
 // booleans needed to be set to a sertain value on start
 bool wantToFightEnemy = true;
 bool zslayerQuestStarted = false;
@@ -189,14 +192,11 @@ Print("Do you want to make a new profile or load a old one\n 1: Make new \n 2: L
 string d = Console.ReadLine();
 if (d == "1")
 {
-    Print("Enter username", 100);
-    playerName = Console.ReadLine();
-    Print("Enter password or press enter if you dont want a password", 120);
-    playerPassword = sha256hashing(Console.ReadLine());
+    CreateProfile();
 }
 else if (d == "2")
 {
-    LoadsStats(playerHP, a1, playerCoins, playerRegen, playerLVL, exp, enemyKilled, maxPlayerHP, playerName);
+    ChooseSave(i, playerName, playerHP, a1, playerCoins, playerRegen, playerLVL, exp, enemyKilled, maxPlayerHP, playerPassword);
 }
 // The game
 while (alive)
@@ -282,7 +282,7 @@ while (alive)
         while (wantToFightEnemy)
         {
             // gives alternatives for enemys to fight
-            Print($"What typer of enemy do you want to fight \n 1. Zombie \n 2. Sprider \n 3. Wolf \n 4. Vampire\n", 350);
+            Print($"What typer of enemy do you want to fight \n 1. Zombie \n 2. Sprider \n 3. Wolf \n 4. Vampire", 350);
             // Incase player has a slayer quest active than might run one of these
             if (zslayerQuestStarted)
             {
@@ -362,7 +362,7 @@ while (alive)
             }
             enemyStartHP = e.enemyHP;
             // if both enemy and player have hp this runs. it just calculates dmg from both player and enemy than subtrackts this from the others hp.
-            while (playerHP > 0 && e.enemyHP > 0 && wantToFightEnemy)
+            while (playerHP > 0 && enemyStartHP > 0 && wantToFightEnemy)
             {
                 float playerTDMG = 0;
                 float enemyTDMG = 0;
@@ -382,7 +382,7 @@ while (alive)
                 break;
             }
             // runs if enemy dies
-            else if (e.enemyHP <= 0)
+            else if (enemyStartHP <= 0)
             {
                 // gives player the reward for killing the enemy
                 playerHP += playerRegen;
@@ -396,23 +396,22 @@ while (alive)
                     {
                         maxPlayerHP += 1;
                         playerHP += 1;
-                        Print("Boss killed you gained 1Hp", 120);
-
+                        Print("Boss killed. you gained 1Hp", 120);
                     }
                     if (e.enenmyType == "sprider")
                     {
                         a1.playerCC += 0.25f;
-                        Print("Boss killed you gained 0.25 crit chance", 120);
+                        Print("Boss killed. you gained 0.25 crit chance", 120);
                     }
                     if (e.enenmyType == "wolf")
                     {
-                        a1.playerCD += 0.2f;
-                        Print("Boss killed you gained 0.2 crit damage", 120);
+                        a1.playerCD += 0.1f;
+                        Print("Boss killed. you gained 0.1 crit damage", 120);
                     }
                     if (e.enenmyType == "vamp")
                     {
-                        playerCoins += 250;
-                        Print("Boss killed you gained 250 coins", 120);
+                        playerCoins += 300;
+                        Print("Boss killed. you gained 300 coins", 120);
                     }
                 }
                 enemyKilled += 1;
@@ -466,14 +465,12 @@ while (alive)
                 b = Console.ReadLine();
                 if (b == "1")
                 {
-
                 }
                 else if (b == "2")
                 {
                     wantToFightEnemy = false;
                     Console.WriteLine(wantToFightEnemy);
                 }
-                // Print($"{e.enemyName}",20); #test making sure it changed enemy
             }
         }
     }
@@ -599,7 +596,6 @@ while (alive)
                 Print($"You now have {w.wepondName} equiped", 125);
                 Thread.Sleep(333);
             }
-
         }
         else if (ShopDesition == "8")
         {
@@ -631,8 +627,8 @@ while (alive)
                         Thread.Sleep(1000);
                         Console.Clear();
                         Print(File.ReadAllText("gambling screens\\3.txt"), 0);
-                        playerCoins += 150;
-                        Print("You won 150 coins", 150);
+                        playerCoins += 200;
+                        Print("You won 200 coins", 150);
                     }
                     else if (gambleResult == "medium win")
                     {
@@ -643,8 +639,8 @@ while (alive)
                         Thread.Sleep(1000);
                         Console.Clear();
                         Print(File.ReadAllText("gambling screens\\13.txt"), 0);
-                        playerCoins += 250;
-                        Print("You won 250 coins", 150);
+                        playerCoins += 450;
+                        Print("You won 450 coins", 150);
                     }
                     else if (gambleResult == "huge win")
                     {
@@ -685,19 +681,17 @@ while (alive)
                 }
             }
         }
-
     }
     // Saves most stats 
     else if (a == "6")
     {
         // Calls Save
-        Save(playerHP, a1.playerDMG, a1.playerCD, a1.playerCC, playerCoins, playerRegen, playerLVL, exp, enemyKilled, a1.playerHC, maxPlayerHP);
-        usernameSave(playerName, playerPassword);
+        Save(playerHP, a1.playerDMG, a1.playerCD, a1.playerCC, playerCoins, playerRegen, playerLVL, exp, enemyKilled, a1.playerHC, maxPlayerHP, playerName, playerPassword);
     }
-    // Loads stats from the save.txt
+    // Loads stats from the save.txt -- now you can choose the save file and load from that. :)
     else if (a == "7")
     {
-        LoadsStats(playerHP, a1, playerCoins, playerRegen, playerLVL, exp, enemyKilled, maxPlayerHP, playerName);
+        ChooseSave(i, playerName, playerHP, a1, playerCoins, playerRegen, playerLVL, exp, enemyKilled, maxPlayerHP, playerPassword);
     }
     //  Reset stats 
     else if (a == "8")
@@ -707,19 +701,16 @@ while (alive)
         if (b == "1")
         {
             string[] resetSave = { "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" };
-            File.WriteAllLines(@"save.txt", resetSave);
+            File.WriteAllLines(playerName, resetSave);
         }
         else
         {
-            
         }
     }
 }
 if (alive == false)
 {
-    Print("You died you save file is now being destroyed XaXaXaXa", 450);
-    string[] resetSave = { "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" };
-    File.WriteAllLines(@"save.txt", resetSave);
+    Print("You died you your profile will revert to last save", 450);
     Console.ReadLine();
 }
 static void Print(string a, int time)
@@ -762,7 +753,7 @@ static float normalHit(float playerDMG, float playerHC, float playerCC, float pl
         {
             Print("Crit!", 120);
             Print($"{playerDMG * a}", 120);
-            return playerDMG * playerCD * a ;
+            return playerDMG * playerCD * a;
         }
         else
         {
@@ -794,67 +785,67 @@ static float chooseAttack(float playerDMG, float playerHC, float playerCC, float
     float playerTDMG = normalHit(a1.playerDMG, a1.playerHC, a1.playerCC, a1.playerCD, w.wepondDmg, w.wepondCD, e, w);
     return playerTDMG;
 }
-static string[] loadStats()
+static string[] loadStats(int i, string playerName, string playerPassword)
 {
     // Checks if file exists 
-    if (File.Exists(@"save.txt"))
+    if (File.Exists(SaveProfiles(playerName, playerPassword)[i]))
     {
         // If save file exists saves the string array and returns it.
-        string[] saveStats = File.ReadAllLines(@"save.txt");
+        string[] saveStats = File.ReadAllLines(SaveProfiles(playerName, playerPassword)[i]);
         return saveStats;
     }
     else
     {
         // If the file dosent exist it creates one and closes it than dose same as if it exists
-        var statsFolder = File.Create(@"save.txt");
+        var statsFolder = File.Create(SaveProfiles(playerName, playerPassword)[i]);
         statsFolder.Close();
-        string[] saveStats = File.ReadAllLines(@"save.txt");
+        string[] saveStats = File.ReadAllLines(SaveProfiles(playerName, playerPassword)[i]);
         return saveStats;
     }
 }
-static string[] usernameLoad()
-{
-    if (File.Exists(@"UsernameSave"))
-    {
-        string[] usernameSave = File.ReadAllLines(@"UsernameSave");
-        return usernameSave;
-    }
-    else
-    {
-        var usernameSaveFile = File.Create(@"UsernameSave");
-        usernameSaveFile.Close();
-        string[] usernameSave = File.ReadAllLines(@"UsernameSave");
-        return usernameSave;
-    }
-}
-static void usernameSave(string playerName, string playerPassword)
-{
-    string[] usernameData = { playerName, playerPassword };
-    if (File.Exists(@"UsernameSave"))
-    {
-        File.WriteAllLines(@"UsernameSave", usernameData);
-    }
-    else
-    {
-        var usernameSaveFile = File.Create(@"UsernameSave");
-        usernameSaveFile.Close();
-        File.WriteAllLines(@"UsernameSave", usernameData);
-    }
-}
-static void Save(float playerHP, float playerDMG, float playerCD, float playerCC, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float playerHC, float maxPlayerHP)
+// static string[] usernameLoad()
+// {
+//     if (File.Exists(@"UsernameSave"))
+//     {
+//         string[] usernameSave = File.ReadAllLines(@"UsernameSave");
+//         return usernameSave;
+//     }
+//     else
+//     {
+//         var usernameSaveFile = File.Create(@"UsernameSave");
+//         usernameSaveFile.Close();
+//         string[] usernameSave = File.ReadAllLines(@"UsernameSave");
+//         return usernameSave;
+//     }
+// }
+// static void usernameSave(string playerName, string playerPassword)
+// {
+//     string[] usernameData = { playerName, playerPassword };
+//     if (File.Exists(@"UsernameSave"))
+//     {
+//         File.WriteAllLines(@"UsernameSave", usernameData);
+//     }
+//     else
+//     {
+//         var usernameSaveFile = File.Create(@"UsernameSave");
+//         usernameSaveFile.Close();
+//         File.WriteAllLines(@"UsernameSave", usernameData);
+//     }
+// }
+static void Save(float playerHP, float playerDMG, float playerCD, float playerCC, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float playerHC, float maxPlayerHP, string playerName, string password)
 {
     // Converts all stats i want to save to strings and puts them in a string array
-    string[] saveStats = { playerHP.ToString(), playerDMG.ToString(), playerCD.ToString(), playerCC.ToString(), playerCoins.ToString(), playerRegen.ToString(), playerLVL.ToString(), exp.ToString(), enemyKilled.ToString(), playerHC.ToString(), maxPlayerHP.ToString() };
+    string[] saveStats = { playerHP.ToString(), playerDMG.ToString(), playerCD.ToString(), playerCC.ToString(), playerCoins.ToString(), playerRegen.ToString(), playerLVL.ToString(), exp.ToString(), enemyKilled.ToString(), playerHC.ToString(), maxPlayerHP.ToString(), password, playerName };
     // Writes the string array into the text file called save. located somewhere in bin i think.
-    if (File.Exists(@"save.txt"))
+    if (File.Exists($@"playerSaves\{playerName}"))
     {
-        File.WriteAllLines(@"save.txt", saveStats);
+        File.WriteAllLines($@"playerSaves\{playerName}", saveStats);
     }
     else
     {
-        var statsFolder = File.Create(@"save.txt");
+        var statsFolder = File.Create($@"playerSaves\{playerName}");
         statsFolder.Close();
-        File.WriteAllLines(@"save.txt", saveStats);
+        File.WriteAllLines($@"playerSaves\{playerName}", saveStats);
     }
 }
 static string Gamble()
@@ -881,6 +872,7 @@ static string Gamble()
         return "error with gamble";
     }
 }
+// inte min kod :) 
 static string sha256hashing(string input)
 {
     using (SHA256 sha256Hash = SHA256.Create())
@@ -895,15 +887,14 @@ static string sha256hashing(string input)
         return hash;
     }
 }
-static void LoadsStats(float playerHP, Attacks a1, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float maxPlayerHP, string playerName)
+static void LoadsStats(float playerHP, Attacks a1, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float maxPlayerHP, int i, string playerName,string playerPassword)
 {
     // Calls load and saves the returning string array into the string array Stats
-    string[] Stats = loadStats();
-    string[] UsernameInfo = usernameLoad();
+    string[] Stats = { loadStats(i, playerName, playerPassword)[0], loadStats(i,playerName, playerPassword)[1], loadStats(i,playerName, playerPassword)[2], loadStats(i,playerName, playerPassword)[3], loadStats(i,playerName, playerPassword)[4], loadStats(i,playerName, playerPassword)[5], loadStats(i,playerName, playerPassword)[6], loadStats(i,playerName, playerPassword)[7], loadStats(i,playerName, playerPassword)[8], loadStats(i,playerName, playerPassword)[9], loadStats(i,playerName, playerPassword)[10] };
     // Takes the string array Stats and coverts it into floats using float.parse and saves it into float array floatArray
     float[] floatArray = Array.ConvertAll(Stats, float.Parse);
     Print("Enter password. If you dont have a password just press enter", 120);
-    if (UsernameInfo[1] == sha256hashing(Console.ReadLine()))
+    if (loadStats(i,playerName, playerPassword)[11] == sha256hashing(Console.ReadLine()))
     {
         // takes the value of floatArray and puts it back into the players stats.
         playerHP = (floatArray[0]);
@@ -917,7 +908,6 @@ static void LoadsStats(float playerHP, Attacks a1, float playerCoins, float play
         enemyKilled = (floatArray[8]);
         a1.playerHC = (floatArray[9]);
         maxPlayerHP = (floatArray[10]);
-        playerName = UsernameInfo[0];
     }
     else
     {
@@ -925,4 +915,47 @@ static void LoadsStats(float playerHP, Attacks a1, float playerCoins, float play
         Console.ReadKey();
         System.Environment.Exit(1);
     }
+}
+static string[] SaveProfiles(string playerName, string playerPassword)
+{
+    string test = "";
+    string[] saveProfiles = Directory.GetFiles(@"playerSaves");
+    try
+    {
+        test = saveProfiles[0];
+    }
+    catch (System.Exception)
+    {
+        Print("You do not have a save file avalible. Please create one first", 250);
+        Console.ReadKey();
+        Environment.Exit(0);
+    }
+    return saveProfiles;
+}
+static int stringToInt(string a)
+{
+    int b = 0;
+    bool succes = int.TryParse(a, out b);
+    return b;
+}
+static void ChooseSave(int i, string playerName, float playerHP, Attacks a1, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float maxPlayerHP, string playerPassword)
+{
+    Print("Chose the profile", 200);
+    string[] saveProfiles = SaveProfiles(playerName, playerPassword);
+    i = 0;
+    foreach (string profiles in saveProfiles)
+    {
+        Console.WriteLine($"{i}: {profiles}");
+        i++;
+    }
+    i = stringToInt(Console.ReadLine());
+    playerName = loadStats(i,playerName, playerPassword)[12];
+    LoadsStats(playerHP, a1, playerCoins, playerRegen, playerLVL, exp, enemyKilled, maxPlayerHP, i,playerName, playerPassword);
+}
+void CreateProfile()
+{
+    Print("Enter username", 100);
+    playerName = @$"{Console.ReadLine()}";
+    Print("Enter password or press enter if you dont want a password", 120);
+    playerPassword = sha256hashing(Console.ReadLine());
 }
