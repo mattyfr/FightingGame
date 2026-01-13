@@ -263,7 +263,6 @@ while (alive)
                     playerRegen += 1;
                     statPoints -= 1;
                 }
-
             }
         }
         else
@@ -288,8 +287,12 @@ while (alive)
             {
                 if (zexp > 250)
                 {
-                    Print($"5. Fight boss", 100);
+                    Print($" 5. Fight boss", 100);
                     canFightSlayer = true;
+                }
+                else
+                {
+                    Print(" You need more of the requerd exp to spawn the boss", 100);
                 }
             }
             else if (sslayerQuestStarted)
@@ -469,7 +472,6 @@ while (alive)
                 else if (b == "2")
                 {
                     wantToFightEnemy = false;
-                    Console.WriteLine(wantToFightEnemy);
                 }
             }
         }
@@ -523,7 +525,6 @@ while (alive)
                 Print("You reached max buy already", 120);
                 Console.ReadKey();
             }
-
         }
         else if (ShopDesition == "2")
         {
@@ -670,8 +671,8 @@ while (alive)
                         else if (a == "3")
                         {
                             Print("How many whould you like to auto buy", 120);
-                            string c = Console.ReadLine();
-                            wantAutoBuy = Convert.ToInt32(c);
+                            int c = stringToInt(Console.ReadLine());
+                            wantAutoBuy = c;
                         }
                     }
                 }
@@ -702,9 +703,6 @@ while (alive)
         {
             string[] resetSave = { "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" };
             File.WriteAllLines(playerName, resetSave);
-        }
-        else
-        {
         }
     }
 }
@@ -752,7 +750,7 @@ static float normalHit(float playerDMG, float playerHC, float playerCC, float pl
         if (random() / 100 <= playerCC)
         {
             Print("Crit!", 120);
-            Print($"{playerDMG * a}", 120);
+            Print($"{playerDMG * playerCD * a}", 120);
             return playerDMG * playerCD * a;
         }
         else
@@ -803,35 +801,6 @@ static string[] loadStats(int i, string playerName, string playerPassword)
         return saveStats;
     }
 }
-// static string[] usernameLoad()
-// {
-//     if (File.Exists(@"UsernameSave"))
-//     {
-//         string[] usernameSave = File.ReadAllLines(@"UsernameSave");
-//         return usernameSave;
-//     }
-//     else
-//     {
-//         var usernameSaveFile = File.Create(@"UsernameSave");
-//         usernameSaveFile.Close();
-//         string[] usernameSave = File.ReadAllLines(@"UsernameSave");
-//         return usernameSave;
-//     }
-// }
-// static void usernameSave(string playerName, string playerPassword)
-// {
-//     string[] usernameData = { playerName, playerPassword };
-//     if (File.Exists(@"UsernameSave"))
-//     {
-//         File.WriteAllLines(@"UsernameSave", usernameData);
-//     }
-//     else
-//     {
-//         var usernameSaveFile = File.Create(@"UsernameSave");
-//         usernameSaveFile.Close();
-//         File.WriteAllLines(@"UsernameSave", usernameData);
-//     }
-// }
 static void Save(float playerHP, float playerDMG, float playerCD, float playerCC, float playerCoins, float playerRegen, float playerLVL, float exp, float enemyKilled, float playerHC, float maxPlayerHP, string playerName, string password)
 {
     // Converts all stats i want to save to strings and puts them in a string array
