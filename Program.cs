@@ -925,6 +925,31 @@ void CreateProfile()
 {
     Print("Enter username", 100);
     playerName = @$"{Console.ReadLine()}";
+    if (playerName == "")
+    {
+        playerName = sha256hashing(random().ToString());
+    }
+    playerName = CheckForNotAllowedChar(playerName);
     Print("Enter password or press enter if you dont want a password", 120);
     playerPassword = sha256hashing(Console.ReadLine());
+}
+static string CheckForNotAllowedChar(string a)
+{
+    char[] b = a.ToCharArray();
+    string c = $@"\";
+    char[] slash = c.ToCharArray();
+    List<char> name = [];
+    foreach (var letter in b)
+    {
+        if (letter == slash[0])
+        {
+        }
+        else
+        {
+            name.Add(letter);
+        }
+    }
+    string d = new string(name.ToArray());
+    return d;
+
 }
